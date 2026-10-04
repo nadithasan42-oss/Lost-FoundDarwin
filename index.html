@@ -21,7 +21,10 @@ body {
     color: #183b35;
 }
 
-button, input, select, textarea {
+button,
+input,
+select,
+textarea {
     font-family: inherit;
 }
 
@@ -33,7 +36,9 @@ button {
     display: none !important;
 }
 
-/* COMMON */
+/* =========================
+   COMMON
+========================= */
 
 .logo-area {
     display: flex;
@@ -90,7 +95,9 @@ button {
     letter-spacing: 1px;
 }
 
-/* LOGIN */
+/* =========================
+   LOGIN
+========================= */
 
 #loginPage {
     min-height: 100vh;
@@ -212,7 +219,9 @@ label {
     font-weight: bold;
 }
 
-input, select, textarea {
+input,
+select,
+textarea {
     width: 100%;
     display: block;
     margin-top: 7px;
@@ -248,17 +257,9 @@ textarea {
     border-radius: 8px;
 }
 
-.demo {
-    background: #f4f7f6;
-    margin-top: 20px;
-    padding: 13px;
-    border-radius: 8px;
-    color: #64766f;
-    font-size: 12px;
-    line-height: 1.7;
-}
-
-/* PUBLIC WEBSITE */
+/* =========================
+   PUBLIC WEBSITE
+========================= */
 
 .public-header {
     min-height: 72px;
@@ -476,7 +477,9 @@ footer p {
     color: #bfd1cb;
 }
 
-/* ADMIN */
+/* =========================
+   ADMIN
+========================= */
 
 #adminPage {
     min-height: 100vh;
@@ -658,9 +661,12 @@ td {
     margin-top: 15px;
 }
 
-/* MOBILE */
+/* =========================
+   RESPONSIVE
+========================= */
 
 @media(max-width:800px) {
+
     .login-container,
     .hero {
         grid-template-columns: 1fr;
@@ -706,6 +712,7 @@ td {
 }
 
 @media(max-width:550px) {
+
     .login-options,
     .item-grid,
     .help-grid,
@@ -727,7 +734,9 @@ td {
 
 <body>
 
-<!-- LOGIN PAGE -->
+<!-- =========================
+     LOGIN PAGE
+========================= -->
 
 <div id="loginPage">
 
@@ -749,10 +758,14 @@ td {
 <div class="login-left">
 
     <span class="pill">
-        PMO201 Group 6 Prototype
+        PMO201 GROUP 6 PROTOTYPE
     </span>
 
-    <h1>Welcome to LostFound</h1>
+    <h1>
+        Welcome to
+        <br>
+        LostFound
+    </h1>
 
     <p>
         A community lost-and-found service designed
@@ -787,9 +800,7 @@ td {
 
             <strong>Public User</strong>
 
-            <small>
-                Report & find items
-            </small>
+            <small>Report & find items</small>
 
         </button>
 
@@ -802,9 +813,7 @@ td {
 
             <strong>Administrator</strong>
 
-            <small>
-                Manage reports
-            </small>
+            <small>Manage reports</small>
 
         </button>
 
@@ -844,28 +853,7 @@ td {
     </form>
 
     <div id="loginError" class="error">
-        Incorrect administrator email or password.
-    </div>
-
-    <div class="demo">
-
-        <strong>Prototype Login</strong>
-
-        <br><br>
-
-        Public User:
-        any valid email and password.
-
-        <br><br>
-
-        Admin:
-        <strong>admin@lostfound.com</strong>
-
-        <br>
-
-        Password:
-        <strong>admin123</strong>
-
+        Incorrect email or password.
     </div>
 
 </div>
@@ -874,7 +862,9 @@ td {
 </div>
 
 
-<!-- PUBLIC USER WEBSITE -->
+<!-- =========================
+     PUBLIC WEBSITE
+========================= -->
 
 <div id="publicPage" class="hidden">
 
@@ -898,9 +888,7 @@ td {
         <button
             class="btn btn-danger"
             onclick="logout()">
-
             Logout
-
         </button>
 
     </div>
@@ -910,7 +898,7 @@ td {
 
 <!-- HOME -->
 
-<div id="home" class="hero">
+<section id="home" class="hero">
 
 <div>
 
@@ -921,7 +909,6 @@ td {
     <h1>
         Lost something?
         <br>
-
         <span>
             Let's help it find its way home.
         </span>
@@ -953,7 +940,6 @@ td {
     </div>
 
 </div>
-
 
 <div class="how-card">
 
@@ -1008,7 +994,8 @@ td {
     </div>
 
 </div>
-</div>
+
+</section>
 
 
 <!-- BROWSE -->
@@ -1037,57 +1024,40 @@ td {
 
 <div class="filters">
 
-    <button
-        class="filter active"
-        data-category="All">
+    <button class="filter active" data-category="All">
         All
     </button>
 
-    <button
-        class="filter"
-        data-category="Electronics">
+    <button class="filter" data-category="Electronics">
         Electronics
     </button>
 
-    <button
-        class="filter"
-        data-category="Keys">
+    <button class="filter" data-category="Keys">
         Keys
     </button>
 
-    <button
-        class="filter"
-        data-category="Bags">
+    <button class="filter" data-category="Bags">
         Bags
     </button>
 
-    <button
-        class="filter"
-        data-category="Clothing">
+    <button class="filter" data-category="Clothing">
         Clothing
     </button>
 
-    <button
-        class="filter"
-        data-category="Other">
+    <button class="filter" data-category="Other">
         Other
     </button>
 
 </div>
 
-<div
-    id="itemContainer"
-    class="item-grid">
-</div>
+<div id="itemContainer" class="item-grid"></div>
 
 </section>
 
 
-<!-- REPORT LOST ITEM -->
+<!-- REPORT ITEM -->
 
-<section
-    id="report"
-    class="public-section light">
+<section id="report" class="public-section light">
 
 <span class="small-title">
     Private Submission
@@ -1096,21 +1066,17 @@ td {
 <h2>Report a Lost Item</h2>
 
 <p>
-    Do not include passwords, identification numbers,
+    Please do not include passwords, identification numbers,
     home addresses or unnecessary private information.
 </p>
 
-<form
-    id="reportForm"
-    class="form-grid">
+<form id="reportForm" class="form-grid">
 
 <label>
 
     Item Category
 
-    <select
-        id="itemCategory"
-        required>
+    <select id="itemCategory" required>
 
         <option value="">
             Select category
@@ -1126,7 +1092,6 @@ td {
 
 </label>
 
-
 <label>
 
     Date Lost
@@ -1137,7 +1102,6 @@ td {
         required>
 
 </label>
-
 
 <label class="full">
 
@@ -1151,7 +1115,6 @@ td {
 
 </label>
 
-
 <label class="full">
 
     General Location
@@ -1164,18 +1127,16 @@ td {
 
 </label>
 
-
 <label class="full">
 
     Description
 
     <textarea
         id="itemDescription"
-        placeholder="Describe the item..."
+        placeholder="Describe the lost item..."
         required></textarea>
 
 </label>
-
 
 <div>
 
@@ -1191,10 +1152,7 @@ td {
 
 </form>
 
-
-<div
-    id="reportSuccess"
-    class="success">
+<div id="reportSuccess" class="success">
 
     <strong>
         Report received successfully.
@@ -1217,22 +1175,20 @@ td {
 
 <!-- POSSIBLE MATCH -->
 
-<section
-    id="match"
-    class="public-section">
+<section id="match" class="public-section">
 
 <span class="small-title">
     Private Contact
 </span>
 
-<h2>
-    Report a Possible Match
-</h2>
+<h2>Report a Possible Match</h2>
 
+<p>
+    If you think you found an item listed on LostFound,
+    send the information privately to the moderation team.
+</p>
 
-<form
-    id="matchForm"
-    class="form-grid">
+<form id="matchForm" class="form-grid">
 
 <label>
 
@@ -1246,7 +1202,6 @@ td {
 
 </label>
 
-
 <label>
 
     Your Name
@@ -1254,10 +1209,10 @@ td {
     <input
         id="matchName"
         type="text"
+        placeholder="Your name"
         required>
 
 </label>
-
 
 <label class="full">
 
@@ -1269,7 +1224,6 @@ td {
         required></textarea>
 
 </label>
-
 
 <div>
 
@@ -1290,16 +1244,13 @@ td {
 
 <!-- HELP -->
 
-<section
-    id="help"
-    class="public-section light">
+<section id="help" class="public-section light">
 
 <span class="small-title">
     Safety First
 </span>
 
 <h2>Get Help</h2>
-
 
 <div class="help-grid">
 
@@ -1310,13 +1261,11 @@ td {
     </h3>
 
     <p>
-        Lost bags, clothing, keys and suitable
-        personal electronic devices during the
-        Darwin pilot.
+        Lost bags, clothing, keys and suitable personal
+        electronic devices during the Darwin pilot.
     </p>
 
 </div>
-
 
 <div class="help-card">
 
@@ -1325,13 +1274,12 @@ td {
     </h3>
 
     <p>
-        Missing people, missing animals,
-        suspected criminal matters,
-        dangerous items or private investigations.
+        Missing people, missing animals, suspected
+        criminal matters, dangerous items or private
+        investigations.
     </p>
 
 </div>
-
 
 <div class="help-card">
 
@@ -1340,10 +1288,9 @@ td {
     </h3>
 
     <p>
-        Dangerous items should not be handed to
-        LostFound. Valuable items, identification
-        documents and cash may require referral
-        to an appropriate organisation.
+        Dangerous items should not be handed to LostFound.
+        Valuable property, identification documents and
+        cash may require referral to an appropriate organisation.
     </p>
 
 </div>
@@ -1351,7 +1298,6 @@ td {
 </div>
 
 </section>
-
 
 <footer>
 
@@ -1376,11 +1322,11 @@ td {
 </div>
 
 
-<!-- ADMIN WEBSITE -->
+<!-- =========================
+     ADMIN PAGE
+========================= -->
 
-<div
-    id="adminPage"
-    class="hidden">
+<div id="adminPage" class="hidden">
 
 <aside class="sidebar">
 
@@ -1402,42 +1348,30 @@ td {
 
 </div>
 
-
 <div class="admin-menu">
 
 <button
     class="admin-nav active"
     onclick="showAdminSection('dashboard',this)">
-
     Dashboard
-
 </button>
-
 
 <button
     class="admin-nav"
     onclick="showAdminSection('reports',this)">
-
     Lost Item Reports
-
 </button>
-
 
 <button
     class="admin-nav"
     onclick="showAdminSection('matches',this)">
-
     Possible Matches
-
 </button>
-
 
 <button
     class="admin-nav"
     onclick="showAdminSection('resolved',this)">
-
     Resolved Cases
-
 </button>
 
 </div>
@@ -1451,16 +1385,13 @@ td {
 
 <div>
 
-    <h1>
-        Admin Dashboard
-    </h1>
+    <h1>Admin Dashboard</h1>
 
     <small>
         LostFound Darwin Community Pilot
     </small>
 
 </div>
-
 
 <button
     class="btn btn-danger"
@@ -1475,9 +1406,7 @@ td {
 
 <!-- DASHBOARD -->
 
-<section
-    id="dashboard"
-    class="admin-section active">
+<section id="dashboard" class="admin-section active">
 
 <div class="stats">
 
@@ -1485,59 +1414,44 @@ td {
 
     <p>Total Reports</p>
 
-    <h2 id="totalReports">
-        0
-    </h2>
+    <h2 id="totalReports">0</h2>
 
 </div>
-
 
 <div class="stat">
 
     <p>Awaiting Review</p>
 
-    <h2 id="pendingReports">
-        0
-    </h2>
+    <h2 id="pendingReports">0</h2>
 
 </div>
-
 
 <div class="stat">
 
     <p>Approved</p>
 
-    <h2 id="approvedReports">
-        0
-    </h2>
+    <h2 id="approvedReports">0</h2>
 
 </div>
-
 
 <div class="stat">
 
     <p>Resolved</p>
 
-    <h2 id="resolvedReports">
-        0
-    </h2>
+    <h2 id="resolvedReports">0</h2>
 
 </div>
 
 </div>
-
 
 <div class="panel">
 
-<h2>
-    Moderation Overview
-</h2>
+<h2>Moderation Overview</h2>
 
 <p>
-    Review reports submitted by public users
-    before they appear on the public website.
+    Review reports submitted by public users before
+    they appear on the public website.
 </p>
-
 
 <div class="warning">
 
@@ -1545,8 +1459,8 @@ td {
     Privacy reminder:
 </strong>
 
-Remove unnecessary personal information and
-ownership evidence before approving a public listing.
+Remove unnecessary personal information and ownership
+evidence before approving a public listing.
 
 </div>
 
@@ -1555,18 +1469,13 @@ ownership evidence before approving a public listing.
 </section>
 
 
-<!-- ADMIN REPORTS -->
+<!-- REPORTS -->
 
-<section
-    id="reports"
-    class="admin-section">
+<section id="reports" class="admin-section">
 
 <div class="panel">
 
-<h2>
-    Lost Item Reports
-</h2>
-
+<h2>Lost Item Reports</h2>
 
 <div class="table-wrap">
 
@@ -1575,22 +1484,17 @@ ownership evidence before approving a public listing.
 <thead>
 
 <tr>
-
     <th>Case</th>
     <th>Item</th>
     <th>Location</th>
     <th>Date</th>
     <th>Status</th>
     <th>Actions</th>
-
 </tr>
 
 </thead>
 
-
-<tbody
-    id="adminReportTable">
-</tbody>
+<tbody id="adminReportTable"></tbody>
 
 </table>
 
@@ -1601,25 +1505,19 @@ ownership evidence before approving a public listing.
 </section>
 
 
-<!-- ADMIN MATCHES -->
+<!-- MATCHES -->
 
-<section
-    id="matches"
-    class="admin-section">
+<section id="matches" class="admin-section">
 
 <div class="panel">
 
-<h2>
-    Possible Matches
-</h2>
+<h2>Possible Matches</h2>
 
 <p>
-    Private possible-match messages
-    submitted by public users.
+    Private possible-match messages submitted by public users.
 </p>
 
-<div id="matchContainer">
-</div>
+<div id="matchContainer"></div>
 
 </div>
 
@@ -1628,16 +1526,11 @@ ownership evidence before approving a public listing.
 
 <!-- RESOLVED -->
 
-<section
-    id="resolved"
-    class="admin-section">
+<section id="resolved" class="admin-section">
 
 <div class="panel">
 
-<h2>
-    Resolved Cases
-</h2>
-
+<h2>Resolved Cases</h2>
 
 <div class="table-wrap">
 
@@ -1646,20 +1539,15 @@ ownership evidence before approving a public listing.
 <thead>
 
 <tr>
-
     <th>Case</th>
     <th>Item</th>
     <th>Location</th>
     <th>Status</th>
-
 </tr>
 
 </thead>
 
-
-<tbody
-    id="resolvedTable">
-</tbody>
+<tbody id="resolvedTable"></tbody>
 
 </table>
 
@@ -1676,67 +1564,72 @@ ownership evidence before approving a public listing.
 
 <script>
 
-/* ==================================
-   DATA
-================================== */
+/* =========================
+   SETTINGS
+========================= */
 
 let loginType = "public";
 let selectedCategory = "All";
 
 
+/*
+IMPORTANT:
+This is only prototype authentication.
+
+GitHub Pages is a static hosting service.
+A real website must authenticate administrators
+using a secure backend/server.
+*/
+
+const ADMIN_EMAIL = "admin@lostfound.com";
+const ADMIN_PASSWORD = "admin123";
+
+
+/* =========================
+   DEFAULT DATA
+========================= */
+
 const defaultReports = [
 
-{
-    caseNumber: "LF-1001",
-    category: "Electronics",
-    item: "Black Wireless Headphones",
-    location: "Darwin CBD",
-    date: "2 Oct 2026",
-    description:
-        "Black over-ear wireless headphones.",
-    status: "Approved"
-},
+    {
+        caseNumber: "LF-1001",
+        category: "Electronics",
+        item: "Black Wireless Headphones",
+        location: "Darwin CBD",
+        date: "2 Oct 2026",
+        description: "Black over-ear wireless headphones.",
+        status: "Approved"
+    },
 
-{
-    caseNumber: "LF-1002",
-    category: "Keys",
-    item: "Set of Keys",
-    location: "Casuarina",
-    date: "3 Oct 2026",
-    description:
-        "Small set of keys with a keyring.",
-    status: "Awaiting Review"
-},
+    {
+        caseNumber: "LF-1002",
+        category: "Keys",
+        item: "Set of Keys",
+        location: "Casuarina",
+        date: "3 Oct 2026",
+        description: "Small set of keys with a keyring.",
+        status: "Awaiting Review"
+    },
 
-{
-    caseNumber: "LF-1003",
-    category: "Bags",
-    item: "Blue Backpack",
-    location: "Darwin Waterfront",
-    date: "4 Oct 2026",
-    description:
-        "Medium-sized blue backpack.",
-    status: "Approved"
-}
+    {
+        caseNumber: "LF-1003",
+        category: "Bags",
+        item: "Blue Backpack",
+        location: "Darwin Waterfront",
+        date: "4 Oct 2026",
+        description: "Medium-sized blue backpack.",
+        status: "Approved"
+    }
 
 ];
 
 
-const defaultMatches = [
-
-{
-    caseNumber: "LF-1001",
-    name: "Alex",
-    message:
-        "I found black headphones near Darwin CBD."
-}
-
-];
+const defaultMatches = [];
 
 
-/* ==================================
+/* =========================
    LOCAL STORAGE
-================================== */
+========================= */
 
 let reports;
 
@@ -1747,9 +1640,7 @@ try {
 
     reports =
         JSON.parse(
-            localStorage.getItem(
-                "lostFoundReports"
-            )
+            localStorage.getItem("lostFoundReports")
         ) || defaultReports;
 
 } catch(error) {
@@ -1763,15 +1654,12 @@ try {
 
     possibleMatches =
         JSON.parse(
-            localStorage.getItem(
-                "lostFoundMatches"
-            )
+            localStorage.getItem("lostFoundMatches")
         ) || defaultMatches;
 
 } catch(error) {
 
-    possibleMatches =
-        defaultMatches;
+    possibleMatches = defaultMatches;
 
 }
 
@@ -1783,12 +1671,9 @@ function saveData() {
         JSON.stringify(reports)
     );
 
-
     localStorage.setItem(
         "lostFoundMatches",
-        JSON.stringify(
-            possibleMatches
-        )
+        JSON.stringify(possibleMatches)
     );
 
 }
@@ -1797,374 +1682,219 @@ function saveData() {
 saveData();
 
 
-/* ==================================
+/* =========================
    LOGIN TYPE
-================================== */
+========================= */
 
 function chooseLogin(type) {
 
     loginType = type;
 
-
     const publicChoice =
-        document.getElementById(
-            "publicChoice"
-        );
-
+        document.getElementById("publicChoice");
 
     const adminChoice =
-        document.getElementById(
-            "adminChoice"
-        );
+        document.getElementById("adminChoice");
 
+    publicChoice.classList.remove("active");
+    adminChoice.classList.remove("active");
 
-    publicChoice.classList.remove(
-        "active"
-    );
-
-
-    adminChoice.classList.remove(
-        "active"
-    );
-
-
-    document
-        .getElementById(
-            "loginError"
-        )
-        .style.display =
-        "none";
+    document.getElementById("loginError")
+        .style.display = "none";
 
 
     if(type === "public") {
 
-        publicChoice.classList.add(
-            "active"
-        );
+        publicChoice.classList.add("active");
 
-
-        document
-            .getElementById(
-                "loginBtn"
-            )
-            .textContent =
-            "Public User Login";
+        document.getElementById("loginBtn")
+            .textContent = "Public User Login";
 
     } else {
 
-        adminChoice.classList.add(
-            "active"
-        );
+        adminChoice.classList.add("active");
 
-
-        document
-            .getElementById(
-                "loginBtn"
-            )
-            .textContent =
-            "Administrator Login";
+        document.getElementById("loginBtn")
+            .textContent = "Administrator Login";
 
     }
 
 }
 
 
-/* ==================================
+/* =========================
    LOGIN
-================================== */
+========================= */
 
 document
 .getElementById("loginForm")
-.addEventListener(
-    "submit",
-    function(event) {
+.addEventListener("submit", function(event) {
 
-        event.preventDefault();
+    event.preventDefault();
+
+    const email =
+        document
+        .getElementById("email")
+        .value
+        .trim();
+
+    const password =
+        document
+        .getElementById("password")
+        .value;
 
 
-        const email =
+    document.getElementById("loginError")
+        .style.display = "none";
+
+
+    if(loginType === "public") {
+
+        if(!email || !password) {
+            return;
+        }
+
+        document
+            .getElementById("loginPage")
+            .classList.add("hidden");
+
+        document
+            .getElementById("publicPage")
+            .classList.remove("hidden");
+
+        document
+            .getElementById("userEmail")
+            .textContent = email;
+
+        renderPublicItems();
+
+        window.scrollTo(0,0);
+
+    } else {
+
+        if(
+            email === ADMIN_EMAIL &&
+            password === ADMIN_PASSWORD
+        ) {
+
             document
-            .getElementById("email")
-            .value
-            .trim();
-
-
-        const password =
-            document
-            .getElementById(
-                "password"
-            )
-            .value;
-
-
-        if(loginType === "public") {
+                .getElementById("loginPage")
+                .classList.add("hidden");
 
             document
-                .getElementById(
-                    "loginPage"
-                )
-                .classList.add(
-                    "hidden"
-                );
+                .getElementById("adminPage")
+                .classList.remove("hidden");
 
-
-            document
-                .getElementById(
-                    "publicPage"
-                )
-                .classList.remove(
-                    "hidden"
-                );
-
-
-            document
-                .getElementById(
-                    "userEmail"
-                )
-                .textContent =
-                email;
-
-
-            renderPublicItems();
-
+            updateAdmin();
 
             window.scrollTo(0,0);
 
         } else {
 
-            if(
-                email ===
-                "admin@lostfound.com"
-
-                &&
-
-                password ===
-                "admin123"
-            ) {
-
-                document
-                    .getElementById(
-                        "loginPage"
-                    )
-                    .classList.add(
-                        "hidden"
-                    );
-
-
-                document
-                    .getElementById(
-                        "adminPage"
-                    )
-                    .classList.remove(
-                        "hidden"
-                    );
-
-
-                updateAdmin();
-
-
-                window.scrollTo(0,0);
-
-            } else {
-
-                document
-                    .getElementById(
-                        "loginError"
-                    )
-                    .style.display =
-                    "block";
-
-            }
+            document
+                .getElementById("loginError")
+                .style.display = "block";
 
         }
 
     }
-);
+
+});
 
 
-/* ==================================
+/* =========================
    LOGOUT
-================================== */
+========================= */
 
 function logout() {
 
     document
-        .getElementById(
-            "publicPage"
-        )
-        .classList.add(
-            "hidden"
-        );
-
+        .getElementById("publicPage")
+        .classList.add("hidden");
 
     document
-        .getElementById(
-            "adminPage"
-        )
-        .classList.add(
-            "hidden"
-        );
-
+        .getElementById("adminPage")
+        .classList.add("hidden");
 
     document
-        .getElementById(
-            "loginPage"
-        )
-        .classList.remove(
-            "hidden"
-        );
-
+        .getElementById("loginPage")
+        .classList.remove("hidden");
 
     document
-        .getElementById(
-            "loginForm"
-        )
+        .getElementById("loginForm")
         .reset();
 
-
     document
-        .getElementById(
-            "loginError"
-        )
-        .style.display =
-        "none";
+        .getElementById("loginError")
+        .style.display = "none";
 
+    chooseLogin("public");
 
     window.scrollTo(0,0);
 
 }
 
 
-/* ==================================
-   SCROLL
-================================== */
+/* =========================
+   PAGE SCROLL
+========================= */
 
 function goTo(section) {
 
     document
         .getElementById(section)
         .scrollIntoView({
-
             behavior: "smooth"
-
         });
 
 }
 
 
-/* ==================================
-   ESCAPE USER INPUT
-================================== */
-
-function escapeHTML(value) {
-
-    return String(value)
-
-        .replaceAll(
-            "&",
-            "&amp;"
-        )
-
-        .replaceAll(
-            "<",
-            "&lt;"
-        )
-
-        .replaceAll(
-            ">",
-            "&gt;"
-        )
-
-        .replaceAll(
-            '"',
-            "&quot;"
-        )
-
-        .replaceAll(
-            "'",
-            "&#039;"
-        );
-
-}
-
-
-/* ==================================
+/* =========================
    PUBLIC ITEMS
-================================== */
+========================= */
 
 function renderPublicItems() {
 
     const container =
-        document.getElementById(
-            "itemContainer"
-        );
-
+        document.getElementById("itemContainer");
 
     const search =
         document
-        .getElementById(
-            "searchInput"
-        )
+        .getElementById("searchInput")
         .value
         .toLowerCase();
-
 
     container.innerHTML = "";
 
 
     const approvedItems =
-        reports.filter(
-            function(report) {
+        reports.filter(function(report) {
 
-                const approved =
-                    report.status ===
-                    "Approved";
+            const approved =
+                report.status === "Approved";
 
+            const categoryMatch =
+                selectedCategory === "All" ||
+                report.category === selectedCategory;
 
-                const categoryMatch =
-                    selectedCategory ===
-                    "All"
+            const searchable =
+                (
+                    report.item + " " +
+                    report.location + " " +
+                    report.description
+                ).toLowerCase();
 
-                    ||
+            return (
+                approved &&
+                categoryMatch &&
+                searchable.includes(search)
+            );
 
-                    report.category ===
-                    selectedCategory;
-
-
-                const searchable =
-                    (
-                        report.item +
-                        " " +
-                        report.location +
-                        " " +
-                        report.description
-                    )
-                    .toLowerCase();
+        });
 
 
-                return (
-
-                    approved
-
-                    &&
-
-                    categoryMatch
-
-                    &&
-
-                    searchable.includes(
-                        search
-                    )
-
-                );
-
-            }
-        );
-
-
-    if(
-        approvedItems.length === 0
-    ) {
+    if(approvedItems.length === 0) {
 
         container.innerHTML =
             "<p>No approved reports found.</p>";
@@ -2174,422 +1904,284 @@ function renderPublicItems() {
     }
 
 
-    approvedItems.forEach(
-        function(report) {
+    approvedItems.forEach(function(report) {
 
-            const card =
-                document.createElement(
-                    "div"
+        const card =
+            document.createElement("div");
+
+        card.className = "item-card";
+
+
+        const category =
+            document.createElement("span");
+
+        category.className = "tag";
+        category.textContent = report.category;
+
+
+        const title =
+            document.createElement("h3");
+
+        title.textContent = report.item;
+
+
+        const caseInfo =
+            document.createElement("div");
+
+        caseInfo.className = "case";
+
+        caseInfo.textContent =
+            report.caseNumber +
+            " • " +
+            report.date +
+            " • " +
+            report.location;
+
+
+        const description =
+            document.createElement("p");
+
+        description.textContent =
+            report.description;
+
+
+        const button =
+            document.createElement("button");
+
+        button.className = "btn btn-outline";
+
+        button.textContent =
+            "I May Have Found This";
+
+        button.addEventListener(
+            "click",
+            function() {
+
+                chooseMatch(
+                    report.caseNumber
                 );
 
-
-            card.className =
-                "item-card";
-
-
-            const category =
-                document.createElement(
-                    "span"
-                );
+            }
+        );
 
 
-            category.className =
-                "tag";
+        card.appendChild(category);
+        card.appendChild(title);
+        card.appendChild(caseInfo);
+        card.appendChild(description);
+        card.appendChild(button);
 
+        container.appendChild(card);
 
-            category.textContent =
-                report.category;
-
-
-            const title =
-                document.createElement(
-                    "h3"
-                );
-
-
-            title.textContent =
-                report.item;
-
-
-            const caseInfo =
-                document.createElement(
-                    "div"
-                );
-
-
-            caseInfo.className =
-                "case";
-
-
-            caseInfo.textContent =
-                report.caseNumber +
-                " • " +
-                report.date +
-                " • " +
-                report.location;
-
-
-            const description =
-                document.createElement(
-                    "p"
-                );
-
-
-            description.textContent =
-                report.description;
-
-
-            const button =
-                document.createElement(
-                    "button"
-                );
-
-
-            button.className =
-                "btn btn-outline";
-
-
-            button.textContent =
-                "I May Have Found This";
-
-
-            button.addEventListener(
-                "click",
-                function() {
-
-                    chooseMatch(
-                        report.caseNumber
-                    );
-
-                }
-            );
-
-
-            card.appendChild(
-                category
-            );
-
-
-            card.appendChild(
-                title
-            );
-
-
-            card.appendChild(
-                caseInfo
-            );
-
-
-            card.appendChild(
-                description
-            );
-
-
-            card.appendChild(
-                button
-            );
-
-
-            container.appendChild(
-                card
-            );
-
-        }
-    );
+    });
 
 }
 
 
-/* ==================================
+/* =========================
    SEARCH
-================================== */
+========================= */
 
 document
-.getElementById(
-    "searchInput"
-)
+.getElementById("searchInput")
 .addEventListener(
     "input",
     renderPublicItems
 );
 
 
-/* ==================================
-   FILTER
-================================== */
+/* =========================
+   CATEGORY FILTER
+========================= */
 
 document
-.querySelectorAll(
-    ".filter"
-)
-.forEach(
-    function(button) {
+.querySelectorAll(".filter")
+.forEach(function(button) {
 
-        button.addEventListener(
-            "click",
-            function() {
+    button.addEventListener(
+        "click",
+        function() {
 
-                document
-                    .querySelectorAll(
-                        ".filter"
-                    )
-                    .forEach(
-                        function(btn) {
+            document
+                .querySelectorAll(".filter")
+                .forEach(function(btn) {
 
-                            btn
-                                .classList
-                                .remove(
-                                    "active"
-                                );
+                    btn.classList.remove("active");
 
-                        }
-                    );
+                });
 
 
-                button
-                    .classList
-                    .add(
-                        "active"
-                    );
+            button.classList.add("active");
+
+            selectedCategory =
+                button.getAttribute("data-category");
+
+            renderPublicItems();
+
+        }
+    );
+
+});
 
 
-                selectedCategory =
-                    button.getAttribute(
-                        "data-category"
-                    );
+/* =========================
+   POSSIBLE MATCH BUTTON
+========================= */
 
-
-                renderPublicItems();
-
-            }
-        );
-
-    }
-);
-
-
-/* ==================================
-   CHOOSE MATCH
-================================== */
-
-function chooseMatch(
-    caseNumber
-) {
+function chooseMatch(caseNumber) {
 
     document
-        .getElementById(
-            "matchCase"
-        )
-        .value =
-        caseNumber;
-
+        .getElementById("matchCase")
+        .value = caseNumber;
 
     goTo("match");
 
 }
 
 
-/* ==================================
+/* =========================
    SUBMIT LOST ITEM
-================================== */
+========================= */
 
 document
-.getElementById(
-    "reportForm"
-)
-.addEventListener(
-    "submit",
-    function(event) {
+.getElementById("reportForm")
+.addEventListener("submit", function(event) {
 
-        event.preventDefault();
+    event.preventDefault();
 
 
-        const numbers =
-            reports.map(
-                function(report) {
+    const numbers =
+        reports.map(function(report) {
 
-                    return (
-                        parseInt(
-                            report
-                            .caseNumber
-                            .replace(
-                                "LF-",
-                                ""
-                            )
-                        )
-                        ||
-                        1000
-                    );
-
-                }
+            return (
+                parseInt(
+                    report.caseNumber.replace("LF-","")
+                ) || 1000
             );
-
-
-        const highest =
-            numbers.length
-
-            ?
-
-            Math.max(
-                ...numbers
-            )
-
-            :
-
-            1000;
-
-
-        const caseNumber =
-            "LF-" +
-            (highest + 1);
-
-
-        const newReport = {
-
-            caseNumber:
-                caseNumber,
-
-            category:
-                document
-                .getElementById(
-                    "itemCategory"
-                )
-                .value,
-
-            item:
-                document
-                .getElementById(
-                    "itemName"
-                )
-                .value
-                .trim(),
-
-            location:
-                document
-                .getElementById(
-                    "itemLocation"
-                )
-                .value
-                .trim(),
-
-            date:
-                document
-                .getElementById(
-                    "dateLost"
-                )
-                .value,
-
-            description:
-                document
-                .getElementById(
-                    "itemDescription"
-                )
-                .value
-                .trim(),
-
-            status:
-                "Awaiting Review"
-
-        };
-
-
-        reports.push(
-            newReport
-        );
-
-
-        saveData();
-
-
-        document
-            .getElementById(
-                "newCaseNumber"
-            )
-            .textContent =
-            caseNumber;
-
-
-        document
-            .getElementById(
-                "reportSuccess"
-            )
-            .style.display =
-            "block";
-
-
-        this.reset();
-
-
-        updateAdmin();
-
-    }
-);
-
-
-/* ==================================
-   POSSIBLE MATCH
-================================== */
-
-document
-.getElementById(
-    "matchForm"
-)
-.addEventListener(
-    "submit",
-    function(event) {
-
-        event.preventDefault();
-
-
-        possibleMatches.push({
-
-            caseNumber:
-                document
-                .getElementById(
-                    "matchCase"
-                )
-                .value
-                .trim(),
-
-            name:
-                document
-                .getElementById(
-                    "matchName"
-                )
-                .value
-                .trim(),
-
-            message:
-                document
-                .getElementById(
-                    "matchMessage"
-                )
-                .value
-                .trim()
 
         });
 
 
-        saveData();
+    const highest =
+        numbers.length
+        ? Math.max(...numbers)
+        : 1000;
 
 
-        alert(
-            "Possible match submitted privately."
-        );
+    const caseNumber =
+        "LF-" + (highest + 1);
 
 
-        this.reset();
+    const newReport = {
+
+        caseNumber: caseNumber,
+
+        category:
+            document
+            .getElementById("itemCategory")
+            .value,
+
+        item:
+            document
+            .getElementById("itemName")
+            .value
+            .trim(),
+
+        location:
+            document
+            .getElementById("itemLocation")
+            .value
+            .trim(),
+
+        date:
+            document
+            .getElementById("dateLost")
+            .value,
+
+        description:
+            document
+            .getElementById("itemDescription")
+            .value
+            .trim(),
+
+        status:
+            "Awaiting Review"
+
+    };
 
 
-        renderMatches();
+    reports.push(newReport);
 
-    }
-);
+    saveData();
 
 
-/* ==================================
+    document
+        .getElementById("newCaseNumber")
+        .textContent = caseNumber;
+
+
+    document
+        .getElementById("reportSuccess")
+        .style.display = "block";
+
+
+    this.reset();
+
+    updateAdmin();
+
+});
+
+
+/* =========================
+   SUBMIT POSSIBLE MATCH
+========================= */
+
+document
+.getElementById("matchForm")
+.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+
+    possibleMatches.push({
+
+        caseNumber:
+            document
+            .getElementById("matchCase")
+            .value
+            .trim(),
+
+        name:
+            document
+            .getElementById("matchName")
+            .value
+            .trim(),
+
+        message:
+            document
+            .getElementById("matchMessage")
+            .value
+            .trim()
+
+    });
+
+
+    saveData();
+
+    alert(
+        "Possible match submitted privately."
+    );
+
+    this.reset();
+
+    renderMatches();
+
+});
+
+
+/* =========================
    ADMIN NAVIGATION
-================================== */
+========================= */
 
 function showAdminSection(
     sectionId,
@@ -2597,63 +2189,38 @@ function showAdminSection(
 ) {
 
     document
-        .querySelectorAll(
-            ".admin-section"
-        )
-        .forEach(
-            function(section) {
+        .querySelectorAll(".admin-section")
+        .forEach(function(section) {
 
-                section
-                    .classList
-                    .remove(
-                        "active"
-                    );
+            section.classList.remove("active");
 
-            }
-        );
+        });
 
 
     document
-        .getElementById(
-            sectionId
-        )
-        .classList.add(
-            "active"
-        );
+        .getElementById(sectionId)
+        .classList.add("active");
 
 
     document
-        .querySelectorAll(
-            ".admin-nav"
-        )
-        .forEach(
-            function(btn) {
+        .querySelectorAll(".admin-nav")
+        .forEach(function(btn) {
 
-                btn
-                    .classList
-                    .remove(
-                        "active"
-                    );
+            btn.classList.remove("active");
 
-            }
-        );
+        });
 
 
-    button
-        .classList
-        .add(
-            "active"
-        );
-
+    button.classList.add("active");
 
     updateAdmin();
 
 }
 
 
-/* ==================================
-   ADMIN REPORT TABLE
-================================== */
+/* =========================
+   ADMIN REPORTS
+========================= */
 
 function renderAdminReports() {
 
@@ -2662,300 +2229,191 @@ function renderAdminReports() {
             "adminReportTable"
         );
 
-
     table.innerHTML = "";
 
 
-    reports.forEach(
-        function(
-            report,
-            index
-        ) {
+    reports.forEach(function(report,index) {
 
-            if(
-                report.status ===
-                "Resolved"
-            ) {
+        if(report.status === "Resolved") {
+            return;
+        }
 
-                return;
 
-            }
+        let statusClass = "pending";
 
 
-            let statusClass =
-                "pending";
+        if(report.status === "Approved") {
 
-
-            if(
-                report.status ===
-                "Approved"
-            ) {
-
-                statusClass =
-                    "approved";
-
-            }
-
-
-            if(
-                report.status ===
-                "More Information Needed"
-            ) {
-
-                statusClass =
-                    "need-info";
-
-            }
-
-
-            const row =
-                document.createElement(
-                    "tr"
-                );
-
-
-            const caseCell =
-                document.createElement(
-                    "td"
-                );
-
-
-            caseCell.textContent =
-                report.caseNumber;
-
-
-            const itemCell =
-                document.createElement(
-                    "td"
-                );
-
-
-            itemCell.textContent =
-                report.item;
-
-
-            const locationCell =
-                document.createElement(
-                    "td"
-                );
-
-
-            locationCell.textContent =
-                report.location;
-
-
-            const dateCell =
-                document.createElement(
-                    "td"
-                );
-
-
-            dateCell.textContent =
-                report.date;
-
-
-            const statusCell =
-                document.createElement(
-                    "td"
-                );
-
-
-            const status =
-                document.createElement(
-                    "span"
-                );
-
-
-            status.className =
-                "status " +
-                statusClass;
-
-
-            status.textContent =
-                report.status;
-
-
-            statusCell.appendChild(
-                status
-            );
-
-
-            const actionCell =
-                document.createElement(
-                    "td"
-                );
-
-
-            const approve =
-                document.createElement(
-                    "button"
-                );
-
-
-            approve.className =
-                "action-btn approve-btn";
-
-
-            approve.textContent =
-                "Approve";
-
-
-            approve.onclick =
-                function() {
-
-                    approveReport(
-                        index
-                    );
-
-                };
-
-
-            const info =
-                document.createElement(
-                    "button"
-                );
-
-
-            info.className =
-                "action-btn info-btn";
-
-
-            info.textContent =
-                "Need Info";
-
-
-            info.onclick =
-                function() {
-
-                    needInfo(
-                        index
-                    );
-
-                };
-
-
-            const resolve =
-                document.createElement(
-                    "button"
-                );
-
-
-            resolve.className =
-                "action-btn resolve-btn";
-
-
-            resolve.textContent =
-                "Resolve";
-
-
-            resolve.onclick =
-                function() {
-
-                    resolveReport(
-                        index
-                    );
-
-                };
-
-
-            actionCell.appendChild(
-                approve
-            );
-
-
-            actionCell.appendChild(
-                info
-            );
-
-
-            actionCell.appendChild(
-                resolve
-            );
-
-
-            row.appendChild(
-                caseCell
-            );
-
-
-            row.appendChild(
-                itemCell
-            );
-
-
-            row.appendChild(
-                locationCell
-            );
-
-
-            row.appendChild(
-                dateCell
-            );
-
-
-            row.appendChild(
-                statusCell
-            );
-
-
-            row.appendChild(
-                actionCell
-            );
-
-
-            table.appendChild(
-                row
-            );
+            statusClass = "approved";
 
         }
-    );
+
+
+        if(
+            report.status ===
+            "More Information Needed"
+        ) {
+
+            statusClass = "need-info";
+
+        }
+
+
+        const row =
+            document.createElement("tr");
+
+
+        const caseCell =
+            document.createElement("td");
+
+        caseCell.textContent =
+            report.caseNumber;
+
+
+        const itemCell =
+            document.createElement("td");
+
+        itemCell.textContent =
+            report.item;
+
+
+        const locationCell =
+            document.createElement("td");
+
+        locationCell.textContent =
+            report.location;
+
+
+        const dateCell =
+            document.createElement("td");
+
+        dateCell.textContent =
+            report.date;
+
+
+        const statusCell =
+            document.createElement("td");
+
+
+        const status =
+            document.createElement("span");
+
+        status.className =
+            "status " + statusClass;
+
+        status.textContent =
+            report.status;
+
+        statusCell.appendChild(status);
+
+
+        const actionCell =
+            document.createElement("td");
+
+
+        const approve =
+            document.createElement("button");
+
+        approve.className =
+            "action-btn approve-btn";
+
+        approve.textContent =
+            "Approve";
+
+        approve.onclick =
+            function() {
+
+                approveReport(index);
+
+            };
+
+
+        const info =
+            document.createElement("button");
+
+        info.className =
+            "action-btn info-btn";
+
+        info.textContent =
+            "Need Info";
+
+        info.onclick =
+            function() {
+
+                needInfo(index);
+
+            };
+
+
+        const resolve =
+            document.createElement("button");
+
+        resolve.className =
+            "action-btn resolve-btn";
+
+        resolve.textContent =
+            "Resolve";
+
+        resolve.onclick =
+            function() {
+
+                resolveReport(index);
+
+            };
+
+
+        actionCell.appendChild(approve);
+        actionCell.appendChild(info);
+        actionCell.appendChild(resolve);
+
+
+        row.appendChild(caseCell);
+        row.appendChild(itemCell);
+        row.appendChild(locationCell);
+        row.appendChild(dateCell);
+        row.appendChild(statusCell);
+        row.appendChild(actionCell);
+
+        table.appendChild(row);
+
+    });
 
 }
 
 
-/* ==================================
+/* =========================
    APPROVE REPORT
-================================== */
+========================= */
 
-function approveReport(
-    index
-) {
+function approveReport(index) {
 
     reports[index].status =
         "Approved";
 
-
     saveData();
-
 
     updateAdmin();
 
-
     alert(
         reports[index].caseNumber +
-        " has been approved and is now visible publicly."
+        " has been approved."
     );
 
 }
 
 
-/* ==================================
-   NEED MORE INFO
-================================== */
+/* =========================
+   NEED INFO
+========================= */
 
-function needInfo(
-    index
-) {
+function needInfo(index) {
 
     reports[index].status =
         "More Information Needed";
 
-
     saveData();
 
-
     updateAdmin();
-
 
     alert(
         "Status changed to More Information Needed."
@@ -2964,42 +2422,34 @@ function needInfo(
 }
 
 
-/* ==================================
-   RESOLVE
-================================== */
+/* =========================
+   RESOLVE REPORT
+========================= */
 
-function resolveReport(
-    index
-) {
+function resolveReport(index) {
 
     const answer =
         confirm(
             "Mark this case as resolved?"
         );
 
-
     if(!answer) {
-
         return;
-
     }
-
 
     reports[index].status =
         "Resolved";
 
-
     saveData();
-
 
     updateAdmin();
 
 }
 
 
-/* ==================================
+/* =========================
    RESOLVED TABLE
-================================== */
+========================= */
 
 function renderResolved() {
 
@@ -3008,118 +2458,98 @@ function renderResolved() {
             "resolvedTable"
         );
 
-
     table.innerHTML = "";
 
 
-    reports
-    .filter(
-        function(report) {
+    const resolved =
+        reports.filter(function(report) {
 
-            return (
-                report.status ===
-                "Resolved"
-            );
+            return report.status === "Resolved";
 
-        }
-    )
-    .forEach(
-        function(report) {
-
-            const row =
-                document.createElement(
-                    "tr"
-                );
+        });
 
 
-            const caseCell =
-                document.createElement(
-                    "td"
-                );
+    if(resolved.length === 0) {
+
+        const row =
+            document.createElement("tr");
+
+        const cell =
+            document.createElement("td");
+
+        cell.colSpan = 4;
+
+        cell.textContent =
+            "No resolved cases yet.";
+
+        row.appendChild(cell);
+
+        table.appendChild(row);
+
+        return;
+
+    }
 
 
-            caseCell.textContent =
-                report.caseNumber;
+    resolved.forEach(function(report) {
+
+        const row =
+            document.createElement("tr");
 
 
-            const itemCell =
-                document.createElement(
-                    "td"
-                );
+        const caseCell =
+            document.createElement("td");
+
+        caseCell.textContent =
+            report.caseNumber;
 
 
-            itemCell.textContent =
-                report.item;
+        const itemCell =
+            document.createElement("td");
+
+        itemCell.textContent =
+            report.item;
 
 
-            const locationCell =
-                document.createElement(
-                    "td"
-                );
+        const locationCell =
+            document.createElement("td");
+
+        locationCell.textContent =
+            report.location;
 
 
-            locationCell.textContent =
-                report.location;
+        const statusCell =
+            document.createElement("td");
 
 
-            const statusCell =
-                document.createElement(
-                    "td"
-                );
+        const status =
+            document.createElement("span");
+
+        status.className =
+            "status resolved";
+
+        status.textContent =
+            "Resolved";
 
 
-            const status =
-                document.createElement(
-                    "span"
-                );
+        statusCell.appendChild(status);
 
 
-            status.className =
-                "status resolved";
+        row.appendChild(caseCell);
+        row.appendChild(itemCell);
+        row.appendChild(locationCell);
+        row.appendChild(statusCell);
 
+        table.appendChild(row);
 
-            status.textContent =
-                "Resolved";
-
-
-            statusCell.appendChild(
-                status
-            );
-
-
-            row.appendChild(
-                caseCell
-            );
-
-
-            row.appendChild(
-                itemCell
-            );
-
-
-            row.appendChild(
-                locationCell
-            );
-
-
-            row.appendChild(
-                statusCell
-            );
-
-
-            table.appendChild(
-                row
-            );
-
-        }
-    );
+    });
 
 }
 
 
-/* ==================================
+/* =========================
    POSSIBLE MATCHES
-================================== */
+========================= */
 
 function renderMatches() {
 
@@ -3128,14 +2558,10 @@ function renderMatches() {
             "matchContainer"
         );
 
-
     container.innerHTML = "";
 
 
-    if(
-        possibleMatches.length ===
-        0
-    ) {
+    if(possibleMatches.length === 0) {
 
         container.innerHTML =
             "<p>No possible matches submitted.</p>";
@@ -3149,20 +2575,14 @@ function renderMatches() {
         function(match) {
 
             const card =
-                document.createElement(
-                    "div"
-                );
-
+                document.createElement("div");
 
             card.className =
                 "match-card";
 
 
             const title =
-                document.createElement(
-                    "h3"
-                );
-
+                document.createElement("h3");
 
             title.textContent =
                 "Possible Match — " +
@@ -3170,77 +2590,33 @@ function renderMatches() {
 
 
             const name =
-                document.createElement(
-                    "p"
-                );
+                document.createElement("p");
 
-
-            const strong =
-                document.createElement(
-                    "strong"
-                );
-
-
-            strong.textContent =
-                "Submitted by: ";
-
-
-            name.appendChild(
-                strong
-            );
-
-
-            name.appendChild(
-                document
-                .createTextNode(
-                    match.name
-                )
-            );
+            name.textContent =
+                "Submitted by: " +
+                match.name;
 
 
             const message =
-                document.createElement(
-                    "p"
-                );
-
+                document.createElement("p");
 
             message.textContent =
                 match.message;
 
 
             const note =
-                document.createElement(
-                    "small"
-                );
-
+                document.createElement("small");
 
             note.textContent =
                 "Ownership must be verified before returning an item.";
 
 
-            card.appendChild(
-                title
-            );
+            card.appendChild(title);
+            card.appendChild(name);
+            card.appendChild(message);
+            card.appendChild(note);
 
-
-            card.appendChild(
-                name
-            );
-
-
-            card.appendChild(
-                message
-            );
-
-
-            card.appendChild(
-                note
-            );
-
-
-            container.appendChild(
-                card
-            );
+            container.appendChild(card);
 
         }
     );
@@ -3248,79 +2624,65 @@ function renderMatches() {
 }
 
 
-/* ==================================
+/* =========================
    STATISTICS
-================================== */
+========================= */
 
 function updateStatistics() {
 
     document
-        .getElementById(
-            "totalReports"
-        )
+        .getElementById("totalReports")
         .textContent =
         reports.length;
 
 
     document
-        .getElementById(
-            "pendingReports"
-        )
+        .getElementById("pendingReports")
         .textContent =
 
-        reports.filter(
-            function(report) {
+        reports.filter(function(report) {
 
-                return (
-                    report.status ===
-                    "Awaiting Review"
-                );
+            return (
+                report.status ===
+                "Awaiting Review"
+            );
 
-            }
-        ).length;
+        }).length;
 
 
     document
-        .getElementById(
-            "approvedReports"
-        )
+        .getElementById("approvedReports")
         .textContent =
 
-        reports.filter(
-            function(report) {
+        reports.filter(function(report) {
 
-                return (
-                    report.status ===
-                    "Approved"
-                );
+            return (
+                report.status ===
+                "Approved"
+            );
 
-            }
-        ).length;
+        }).length;
 
 
     document
-        .getElementById(
-            "resolvedReports"
-        )
+        .getElementById("resolvedReports")
         .textContent =
 
-        reports.filter(
-            function(report) {
+        reports.filter(function(report) {
 
-                return (
-                    report.status ===
-                    "Resolved"
-                );
+            return (
+                report.status ===
+                "Resolved"
+            );
 
-            }
-        ).length;
+        }).length;
 
 }
 
 
-/* ==================================
+/* =========================
    UPDATE ADMIN
-================================== */
+========================= */
 
 function updateAdmin() {
 
@@ -3337,7 +2699,9 @@ function updateAdmin() {
 }
 
 
-/* INITIAL LOAD */
+/* =========================
+   INITIAL LOAD
+========================= */
 
 updateAdmin();
 
