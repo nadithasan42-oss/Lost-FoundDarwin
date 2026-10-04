@@ -962,6 +962,63 @@
             form { gap:14px; }
         }
 
+
+        /* FIRST SCREEN LOGIN GATEWAY */
+        .auth-gateway {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 28px;
+            background: linear-gradient(135deg, #f8fbf9, #dff1eb);
+        }
+        .auth-box {
+            width: min(560px, 100%);
+            background: white;
+            border: 1px solid #dce5e1;
+            border-radius: 22px;
+            padding: 30px;
+            box-shadow: 0 18px 50px rgba(0,0,0,.10);
+        }
+        .auth-logo {
+            width: 52px; height: 52px; border-radius: 14px;
+            display:flex; align-items:center; justify-content:center;
+            background:#176b5b; color:white; font-weight:800;
+            margin-bottom:16px;
+        }
+        .auth-box h1 { margin: 0 0 8px; font-size: 34px; }
+        .auth-box > p { color:#5c6d68; line-height:1.6; }
+        .auth-tabs { display:flex; gap:10px; margin:22px 0; }
+        .auth-tabs button {
+            flex:1; padding:12px; border-radius:10px; cursor:pointer;
+            border:1px solid #176b5b; background:white; color:#176b5b; font-weight:800;
+        }
+        .auth-tabs button.active { background:#176b5b; color:white; }
+        .gateway-form { display:grid; gap:14px; }
+        .gateway-form label { display:block; }
+        .gateway-form input { margin-top:7px; }
+        .gateway-message { min-height:20px; color:#a23a2a; font-size:13px; }
+        body:not(.public-mode):not(.admin-mode) > header,
+        body:not(.public-mode):not(.admin-mode) > .hero,
+        body:not(.public-mode):not(.admin-mode) > section,
+        body:not(.public-mode):not(.admin-mode) > footer { display:none !important; }
+        body.public-mode > .auth-gateway,
+        body.admin-mode > .auth-gateway { display:none; }
+        body.public-mode #administration { display:none !important; }
+        body.admin-mode > header,
+        body.admin-mode > .hero,
+        body.admin-mode > section:not(#administration),
+        body.admin-mode > footer { display:none !important; }
+        body.admin-mode #administration { display:block !important; min-height:100vh; }
+        .admin-back-login { margin-left:8px; }
+
+        @media (max-width: 600px) {
+            .auth-gateway { padding:16px; align-items:flex-start; padding-top:55px; }
+            .auth-box { padding:22px; border-radius:18px; }
+            .auth-box h1 { font-size:29px; }
+            .auth-tabs { flex-direction:column; }
+        }
+
 </style>
 
 </head>
@@ -969,6 +1026,45 @@
 
 
 <body>
+
+<div class="auth-gateway" id="authGateway">
+    <div class="auth-box">
+        <div class="auth-logo">LF</div>
+        <h1>LostFound Darwin</h1>
+        <p>Sign in to continue to the Darwin community lost-and-found prototype.</p>
+
+        <div class="auth-tabs">
+            <button type="button" class="active" id="showPublicLogin">Public User Login</button>
+            <button type="button" id="showAdminLogin">Administrator Login</button>
+        </div>
+
+        <div class="gateway-form" id="gatewayPublicForm">
+            <label>Your Name
+                <input id="gatewayPublicName" type="text" placeholder="Your name">
+            </label>
+            <label>Email
+                <input id="gatewayPublicEmail" type="email" placeholder="you@example.com">
+            </label>
+            <label>Password
+                <input id="gatewayPublicPassword" type="password" placeholder="Password">
+            </label>
+            <button class="button primary" id="gatewayPublicButton" type="button">Public User Login</button>
+            <div class="gateway-message" id="gatewayPublicMessage"></div>
+        </div>
+
+        <div class="gateway-form hidden" id="gatewayAdminForm">
+            <label>Administrator Email
+                <input id="gatewayAdminEmail" type="email" placeholder="Administrator email">
+            </label>
+            <label>Password
+                <input id="gatewayAdminPassword" type="password" placeholder="Password">
+            </label>
+            <button class="button primary" id="gatewayAdminButton" type="button">Administrator Login</button>
+            <div class="gateway-message" id="gatewayAdminMessage"></div>
+        </div>
+    </div>
+</div>
+
 
 
 
@@ -2040,7 +2136,57 @@ const ADMIN_SESSION_KEY = "lostfound_admin_session_v5";
 const ADMIN_EMAIL = "admin@lostfound.com";
 const ADMIN_PASSWORD = "admin123";
 let selectedCategory = "All";
+
 let cachedReports = [];
+
+function showLoginGateway() {
+  document.body.classList.remove("public-mode","admin-mode");
+}
+function enterPublicMode() {
+  document.body.classList.remove("admin-mode");
+  document.body.classList.add("public-mode");
+  updateAccountUI();
+}
+function enterAdminMode() {
+  document.body.classList.remove("public-mode");
+  document.body.classList.add("admin-mode");
+  updateAdminUI();
+  loadReports();
+}
+function setGatewayTab(type) {
+  const isPublic = type === "public";
+  document.getElementById("gatewayPublicForm").classList.toggle("hidden", !isPublic);
+  document.getElementById("gatewayAdminForm").classList.toggle("hidden", isPublic);
+  document.getElementById("showPublicLogin").classList.toggle("active", isPublic);
+  document.getElementById("showAdminLogin").classList.toggle("active", !isPublic);
+}
+document.getElementById("showPublicLogin").addEventListener("click",()=>setGatewayTab("public"));
+document.getElementById("showAdminLogin").addEventListener("click",()=>setGatewayTab("admin"));
+
+document.getElementById("gatewayPublicButton").addEventListener("click",()=>{
+  const name=document.getElementById("gatewayPublicName").value.trim();
+  const email=document.getElementById("gatewayPublicEmail").value.trim().toLowerCase();
+  const password=document.getElementById("gatewayPublicPassword").value;
+  const msg=document.getElementById("gatewayPublicMessage");
+  if(!name || !email || !password){ msg.textContent="Please enter your name, email and password."; return; }
+  localStorage.setItem(SESSION_KEY,JSON.stringify({name,email}));
+  msg.textContent="";
+  enterPublicMode();
+});
+
+document.getElementById("gatewayAdminButton").addEventListener("click",()=>{
+  const email=document.getElementById("gatewayAdminEmail").value.trim().toLowerCase();
+  const password=document.getElementById("gatewayAdminPassword").value;
+  const msg=document.getElementById("gatewayAdminMessage");
+  if(email===ADMIN_EMAIL && password===ADMIN_PASSWORD){
+    sessionStorage.setItem(ADMIN_SESSION_KEY,"yes");
+    msg.textContent="";
+    enterAdminMode();
+  } else {
+    msg.textContent="Incorrect administrator email or password.";
+  }
+});
+
 
 const sampleLostItems = [
  {caseNumber:"LF-1024",category:"Electronics",title:"Black Wireless Headphones",location:"Darwin CBD",date:"2 October 2026",description:"Black over-ear wireless headphones."},
@@ -2114,7 +2260,7 @@ document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=
 }));
 document.getElementById("publicLoginMenu").addEventListener("click",()=>{
   accountMenu.classList.remove("open");
-  if(getUser()){ localStorage.removeItem(SESSION_KEY); updateAccountUI(); }
+  if(getUser()){ localStorage.removeItem(SESSION_KEY); updateAccountUI(); showLoginGateway(); }
   else document.getElementById("myReports").scrollIntoView({behavior:"smooth"});
 });
 
@@ -2213,7 +2359,7 @@ document.getElementById("adminLoginButton").addEventListener("click",async()=>{
   }else msg.textContent="Incorrect administrator email or password.";
 });
 document.getElementById("adminLogoutButton").addEventListener("click",()=>{
-  sessionStorage.removeItem(ADMIN_SESSION_KEY); updateAdminUI();
+  sessionStorage.removeItem(ADMIN_SESSION_KEY); updateAdminUI(); showLoginGateway();
 });
 document.getElementById("refreshAdminButton").addEventListener("click",loadReports);
 
@@ -2269,6 +2415,14 @@ updateAccountUI();
 updateAdminUI();
 displayItems();
 loadReports();
+
+if (isAdmin()) {
+  enterAdminMode();
+} else if (getUser()) {
+  enterPublicMode();
+} else {
+  showLoginGateway();
+}
 </script>
 
 </body>
