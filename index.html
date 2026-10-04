@@ -842,7 +842,127 @@
 
         }
 
-    </style>
+    
+        /* PROTOTYPE ACCOUNT + SAVED REPORTS */
+        .account-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: 18px;
+        }
+        .account-name {
+            font-size: 13px;
+            color: #536a64;
+            font-weight: bold;
+        }
+        .small-button {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #176b5b;
+            background: white;
+            color: #176b5b;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .my-reports-box {
+            max-width: 900px;
+        }
+        .saved-report {
+            background: white;
+            border: 1px solid #dce5e1;
+            border-radius: 14px;
+            padding: 20px;
+            margin: 14px 0;
+        }
+        .saved-report h3 {
+            margin: 8px 0;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 12px;
+            background: #fff3cd;
+            color: #755c00;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .login-panel {
+            max-width: 520px;
+            background: white;
+            border: 1px solid #dce5e1;
+            border-radius: 15px;
+            padding: 22px;
+            margin-top: 20px;
+        }
+        .login-panel input {
+            margin-bottom: 12px;
+        }
+        .prototype-note {
+            font-size: 12px;
+            color: #6b7d78;
+            line-height: 1.5;
+        }
+
+    
+        /* ACCOUNT MENU + ADMIN */
+        .menu-wrap { position: relative; }
+        .menu-button {
+            width: 40px; height: 40px; border-radius: 10px;
+            border: 1px solid #c7d5d0; background: white; color: #176b5b;
+            font-size: 25px; line-height: 1; cursor: pointer;
+        }
+        .account-menu {
+            display: none; position: absolute; right: 0; top: 48px;
+            width: 210px; background: white; border: 1px solid #dce5e1;
+            border-radius: 12px; box-shadow: 0 14px 35px rgba(0,0,0,.13);
+            padding: 8px; z-index: 1000;
+        }
+        .account-menu.open { display: block; }
+        .account-menu button {
+            width: 100%; text-align: left; border: 0; background: transparent;
+            padding: 11px 12px; border-radius: 8px; cursor: pointer;
+            color: #183b35; font-weight: 600;
+        }
+        .account-menu button:hover { background: #eef6f2; }
+        .admin-grid {
+            display: grid; grid-template-columns: repeat(2, minmax(0,1fr));
+            gap: 16px; margin-top: 22px; max-width: 1000px;
+        }
+        .admin-card {
+            background: white; border: 1px solid #dce5e1; border-radius: 14px;
+            padding: 18px; overflow-wrap: anywhere;
+        }
+        .admin-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+        .admin-actions button {
+            padding: 8px 10px; border: 1px solid #176b5b; border-radius: 8px;
+            background: white; color:#176b5b; cursor:pointer; font-weight:700;
+        }
+        .admin-actions button:hover { background:#eef6f2; }
+        .admin-login { max-width:520px; }
+        .hidden { display:none !important; }
+
+        @media (max-width: 900px) {
+            header { padding: 12px 4%; }
+            .account-name { display:none; }
+            .admin-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 800px) {
+            nav { display:none; }
+            section { padding: 55px 5%; }
+            .hero { padding-left:5%; padding-right:5%; }
+            .hero h1 { font-size: 40px; }
+            .account-bar { margin-left:auto; }
+            .account-menu { position: fixed; right: 14px; top: 66px; width: min(260px, calc(100vw - 28px)); }
+        }
+        @media (max-width: 450px) {
+            .hero h1 { font-size: 34px; }
+            section h2 { font-size: 30px; }
+            .button { width:100%; text-align:center; }
+            .buttons { width:100%; }
+            form { gap:14px; }
+        }
+
+</style>
 
 </head>
 
@@ -867,18 +987,25 @@
 
 
     <nav>
-
         <a href="#home">Home</a>
-
         <a href="#browse">Browse</a>
-
         <a href="#report">Report Lost Item</a>
-
+        <a href="#myReports">My Reports</a>
         <a href="#match">Possible Match</a>
-
         <a href="#help">Get Help</a>
-
     </nav>
+    <div class="account-bar">
+        <span class="account-name" id="accountName">Not signed in</span>
+        <div class="menu-wrap">
+            <button class="menu-button" id="menuButton" type="button" aria-label="Open account menu">⋮</button>
+            <div class="account-menu" id="accountMenu">
+                <button type="button" data-go="report">Report Lost Item</button>
+                <button type="button" data-go="myReports">My Reports</button>
+                <button type="button" id="publicLoginMenu">Public User Login</button>
+                <button type="button" data-go="administration">Administration</button>
+            </div>
+        </div>
+    </div>
 
 
 
@@ -1406,6 +1533,8 @@
 
             <input
 
+                id="itemPhoto"
+
                 type="file"
 
                 accept="image/png, image/jpeg"
@@ -1486,6 +1615,8 @@
 
 
 
+        Case Number: <strong id="newCaseNumber">—</strong><br><br>
+
         Status: <strong>Awaiting Review</strong>
 
 
@@ -1499,6 +1630,60 @@
 
 
 
+
+
+<!-- PUBLIC USER ACCOUNT / MY REPORTS -->
+<section id="myReports">
+    <span class="small-title">Saved on this device</span>
+    <h2>My Reports</h2>
+    <p class="description">
+        Sign in as a Public User to submit reports and keep your case numbers and report details available after refreshing this prototype.
+    </p>
+
+    <div id="loginPanel" class="login-panel">
+        <label>
+            Your Name
+            <input id="loginName" type="text" placeholder="Example: Nadit Hasan">
+        </label>
+        <label>
+            Email
+            <input id="loginEmail" type="email" placeholder="Example: name@email.com">
+        </label>
+        <button class="button primary" id="loginButton" type="button">Sign In</button>
+        <p class="prototype-note">
+            Prototype only: this sign-in is stored in this browser. It is not a real secure account system.
+        </p>
+    </div>
+
+    <div id="myReportsList" class="my-reports-box"></div>
+</section>
+
+
+<!-- ADMINISTRATION -->
+<section id="administration" class="light">
+    <span class="small-title">Moderator Area</span>
+    <h2>Administration</h2>
+    <p class="description">
+        Administrator can review reports submitted by public users and update their status.
+    </p>
+    <div id="adminLoginPanel" class="login-panel admin-login">
+        <label>Administrator Email
+            <input id="adminEmail" type="email" placeholder="Administrator email">
+        </label>
+        <label>Password
+            <input id="adminPassword" type="password" placeholder="Password">
+        </label>
+        <button class="button primary" id="adminLoginButton" type="button">Administrator Login</button>
+        <p id="adminLoginMessage" class="prototype-note"></p>
+    </div>
+    <div id="adminDashboard" class="hidden">
+        <div class="buttons">
+            <button class="button secondary" id="refreshAdminButton" type="button">Refresh Reports</button>
+            <button class="button secondary" id="adminLogoutButton" type="button">Admin Log Out</button>
+        </div>
+        <div id="adminReports" class="admin-grid"></div>
+    </div>
+</section>
 
 <!-- POSSIBLE MATCH -->
 
@@ -1831,575 +2016,260 @@
 
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyALANrgjPwHrs0LNl-M1PS7VNCmuOc9iQk",
-      authDomain: "lostfounddarwin.firebaseapp.com",
-      projectId: "lostfounddarwin",
-      storageBucket: "lostfounddarwin.firebasestorage.app",
-      messagingSenderId: "145296355069",
-      appId: "1:145296355069:web:b3abb1f77a957107141894",
-      measurementId: "G-DJTCKQK3MP"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-
-
-
-    /* SAMPLE DATA */
-
-
-
-    const lostItems = [
-
-
-
-        {
-
-            caseNumber: "LF-1024",
-
-            category: "Electronics",
-
-            title: "Black Wireless Headphones",
-
-            location: "Darwin CBD",
-
-            date: "2 October 2026",
-
-            description: "Black over-ear wireless headphones."
-
-        },
-
-
-
-        {
-
-            caseNumber: "LF-1027",
-
-            category: "Keys",
-
-            title: "Set of Keys",
-
-            location: "Casuarina",
-
-            date: "3 October 2026",
-
-            description: "A small set of keys with a keyring."
-
-        },
-
-
-
-        {
-
-            caseNumber: "LF-1031",
-
-            category: "Bags",
-
-            title: "Blue Backpack",
-
-            location: "Darwin Waterfront",
-
-            date: "4 October 2026",
-
-            description: "Medium-sized blue backpack."
-
-        },
-
-
-
-        {
-
-            caseNumber: "LF-1034",
-
-            category: "Clothing",
-
-            title: "Black Jacket",
-
-            location: "Casuarina",
-
-            date: "4 October 2026",
-
-            description: "Black jacket reported lost in Casuarina."
-
-        }
-
-
-
-    ];
-
-
-
-
-
-    let selectedCategory = "All";
-
-
-
-
-
-    const itemList =
-
-        document.getElementById("itemList");
-
-
-
-
-
-    const searchInput =
-
-        document.getElementById("search");
-
-
-
-
-
-    /* DISPLAY ITEMS */
-
-
-
-    function displayItems() {
-
-
-
-        const searchText =
-
-            searchInput.value.toLowerCase();
-
-
-
-
-
-        const filteredItems =
-
-            lostItems.filter(function(item) {
-
-
-
-
-
-                const matchesCategory =
-
-                    selectedCategory === "All" ||
-
-                    item.category === selectedCategory;
-
-
-
-
-
-                const matchesSearch =
-
-
-
-                    item.title.toLowerCase().includes(searchText) ||
-
-
-
-                    item.location.toLowerCase().includes(searchText) ||
-
-
-
-                    item.description.toLowerCase().includes(searchText);
-
-
-
-
-
-                return matchesCategory && matchesSearch;
-
-
-
-            });
-
-
-
-
-
-        itemList.innerHTML = "";
-
-
-
-
-
-        if (filteredItems.length === 0) {
-
-
-
-            itemList.innerHTML =
-
-                "<p>No matching lost items found.</p>";
-
-
-
-            return;
-
-
-
-        }
-
-
-
-
-
-        filteredItems.forEach(function(item) {
-
-
-
-
-
-            const card =
-
-                document.createElement("div");
-
-
-
-
-
-            card.className = "card";
-
-
-
-
-
-            card.innerHTML =
-
-
-
-                '<span class="tag">' +
-
-                item.category +
-
-                '</span>' +
-
-
-
-                '<h3>' +
-
-                item.title +
-
-                '</h3>' +
-
-
-
-                '<div class="details">' +
-
-                item.caseNumber +
-
-                ' • ' +
-
-                item.date +
-
-                ' • ' +
-
-                item.location +
-
-                '</div>' +
-
-
-
-                '<p>' +
-
-                item.description +
-
-                '</p>' +
-
-
-
-                '<button class="button secondary match-button" data-case="' +
-
-                item.caseNumber +
-
-                '">' +
-
-                'I May Have Found This' +
-
-                '</button>';
-
-
-
-
-
-            itemList.appendChild(card);
-
-
-
-        });
-
-
-
-
-
-        addMatchButtons();
-
-
-
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import {
+    getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc,
+    serverTimestamp, query, orderBy
+} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyALANrgjPwHrs0LNl-M1PS7VNCmuOc9iQk",
+  authDomain: "lostfounddarwin.firebaseapp.com",
+  projectId: "lostfounddarwin",
+  storageBucket: "lostfounddarwin.firebasestorage.app",
+  messagingSenderId: "145296355069",
+  appId: "1:145296355069:web:b3abb1f77a957107141894",
+  measurementId: "G-DJTCKQK3MP"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const SESSION_KEY = "lostfound_public_user_v5";
+const ADMIN_SESSION_KEY = "lostfound_admin_session_v5";
+const ADMIN_EMAIL = "admin@lostfound.com";
+const ADMIN_PASSWORD = "admin123";
+let selectedCategory = "All";
+let cachedReports = [];
+
+const sampleLostItems = [
+ {caseNumber:"LF-1024",category:"Electronics",title:"Black Wireless Headphones",location:"Darwin CBD",date:"2 October 2026",description:"Black over-ear wireless headphones."},
+ {caseNumber:"LF-1027",category:"Keys",title:"Set of Keys",location:"Casuarina",date:"3 October 2026",description:"A small set of keys with a keyring."},
+ {caseNumber:"LF-1031",category:"Bags",title:"Blue Backpack",location:"Darwin Waterfront",date:"4 October 2026",description:"Medium-sized blue backpack."}
+];
+
+const itemList = document.getElementById("itemList");
+const searchInput = document.getElementById("search");
+const reportForm = document.getElementById("reportForm");
+const matchForm = document.getElementById("matchForm");
+
+function esc(v="") {
+  return String(v).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+}
+function getUser(){ try{return JSON.parse(localStorage.getItem(SESSION_KEY))||null}catch{return null} }
+function isAdmin(){ return sessionStorage.getItem(ADMIN_SESSION_KEY)==="yes"; }
+function makeCaseNumber(){
+  return "LF-" + String(Date.now()).slice(-7);
+}
+function tsText(v){
+  if (!v) return "";
+  if (v.toDate) return v.toDate().toLocaleString();
+  return String(v);
+}
+
+async function loadReports(){
+  try {
+    const snap = await getDocs(query(collection(db,"reports"), orderBy("createdAt","desc")));
+    cachedReports = snap.docs.map(d => ({id:d.id,...d.data()}));
+  } catch(e) {
+    console.error(e);
+    try {
+      const snap = await getDocs(collection(db,"reports"));
+      cachedReports = snap.docs.map(d => ({id:d.id,...d.data()}));
+    } catch(err) {
+      console.error(err);
+      cachedReports = [];
     }
+  }
+  displayMyReports();
+  displayItems();
+  if (isAdmin()) displayAdminReports();
+}
 
+function updateAccountUI(){
+  const user=getUser();
+  document.getElementById("accountName").textContent=user ? "Public User: "+user.name : "Not signed in";
+  document.getElementById("publicLoginMenu").textContent=user ? "Public User Log Out" : "Public User Login";
+  document.getElementById("loginPanel").style.display=user ? "none" : "block";
+  displayMyReports();
+}
 
+document.getElementById("loginButton").addEventListener("click",()=>{
+  const name=document.getElementById("loginName").value.trim();
+  const email=document.getElementById("loginEmail").value.trim().toLowerCase();
+  if(!name||!email){alert("Please enter your name and email.");return;}
+  localStorage.setItem(SESSION_KEY,JSON.stringify({name,email}));
+  updateAccountUI();
+  document.getElementById("myReports").scrollIntoView({behavior:"smooth"});
+});
 
+const menuButton=document.getElementById("menuButton");
+const accountMenu=document.getElementById("accountMenu");
+menuButton.addEventListener("click",(e)=>{e.stopPropagation();accountMenu.classList.toggle("open");});
+document.addEventListener("click",()=>accountMenu.classList.remove("open"));
+accountMenu.addEventListener("click",e=>e.stopPropagation());
+document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>{
+  accountMenu.classList.remove("open");
+  document.getElementById(b.dataset.go)?.scrollIntoView({behavior:"smooth"});
+}));
+document.getElementById("publicLoginMenu").addEventListener("click",()=>{
+  accountMenu.classList.remove("open");
+  if(getUser()){ localStorage.removeItem(SESSION_KEY); updateAccountUI(); }
+  else document.getElementById("myReports").scrollIntoView({behavior:"smooth"});
+});
 
+function displayMyReports(){
+  const box=document.getElementById("myReportsList");
+  const user=getUser();
+  if(!user){box.innerHTML="<p>Please sign in to see your reports.</p>";return;}
+  const reports=cachedReports.filter(r=>(r.userEmail||"").toLowerCase()===user.email);
+  if(!reports.length){box.innerHTML="<p>You have not submitted any reports yet.</p>";return;}
+  box.innerHTML=reports.map(r=>`
+    <div class="saved-report">
+      <span class="status-badge">${esc(r.status||"Awaiting Review")}</span>
+      <h3>${esc(r.category||r.itemType||"Item")} — ${esc(r.caseNumber||"")}</h3>
+      <div class="details">Lost: ${esc(r.dateLost||"")} • ${esc(r.location||"")}</div>
+      <p>${esc(r.description||"")}</p>
+      ${r.photoName?`<p class="details">Photo selected: ${esc(r.photoName)}</p>`:""}
+      <p class="details">Submitted: ${esc(tsText(r.createdAt))}</p>
+    </div>`).join("");
+}
 
-    /* FILTER */
+function approvedItems(){
+  const approved=cachedReports.filter(r=>r.status==="Approved").map(r=>({
+    caseNumber:r.caseNumber||"",
+    category:r.category||r.itemType||"Other",
+    title:(r.category||r.itemType||"Item")+" report",
+    location:r.location||"",
+    date:r.dateLost||"",
+    description:r.description||""
+  }));
+  return sampleLostItems.concat(approved);
+}
+function displayItems(){
+  const q=(searchInput.value||"").toLowerCase();
+  const items=approvedItems().filter(i=>
+    (selectedCategory==="All"||i.category===selectedCategory) &&
+    [i.title,i.location,i.description,i.caseNumber].some(v=>String(v).toLowerCase().includes(q))
+  );
+  itemList.innerHTML=items.length?items.map(i=>`
+    <div class="card">
+      <span class="tag">${esc(i.category)}</span>
+      <h3>${esc(i.title)}</h3>
+      <div class="details">${esc(i.caseNumber)} • ${esc(i.date)} • ${esc(i.location)}</div>
+      <p>${esc(i.description)}</p>
+      <button class="button secondary match-button" data-case="${esc(i.caseNumber)}">I May Have Found This</button>
+    </div>`).join(""):"<p>No matching lost items found.</p>";
+  document.querySelectorAll(".match-button").forEach(b=>b.addEventListener("click",()=>{
+    document.getElementById("caseNumber").value=b.dataset.case;
+    document.getElementById("match").scrollIntoView({behavior:"smooth"});
+  }));
+}
+document.querySelectorAll(".filter-button").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll(".filter-button").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active"); selectedCategory=b.dataset.category; displayItems();
+}));
+searchInput.addEventListener("input",displayItems);
 
-
-
-    const filterButtons =
-
-        document.querySelectorAll(".filter-button");
-
-
-
-
-
-    filterButtons.forEach(function(button) {
-
-
-
-
-
-        button.addEventListener("click", function() {
-
-
-
-
-
-            filterButtons.forEach(function(btn) {
-
-
-
-                btn.classList.remove("active");
-
-
-
-            });
-
-
-
-
-
-            button.classList.add("active");
-
-
-
-
-
-            selectedCategory =
-
-                button.getAttribute("data-category");
-
-
-
-
-
-            displayItems();
-
-
-
-        });
-
-
-
+reportForm.addEventListener("submit",async event=>{
+  event.preventDefault();
+  const user=getUser();
+  if(!user){alert("Please sign in as a Public User before submitting a report.");document.getElementById("myReports").scrollIntoView({behavior:"smooth"});return;}
+  const btn=reportForm.querySelector('button[type="submit"]');
+  btn.disabled=true; btn.textContent="Submitting...";
+  const photo=document.getElementById("itemPhoto")?.files?.[0];
+  const caseNumber=makeCaseNumber();
+  try{
+    await addDoc(collection(db,"reports"),{
+      caseNumber,
+      userEmail:user.email,
+      userName:user.name,
+      category:document.getElementById("itemType").value,
+      dateLost:document.getElementById("dateLost").value,
+      location:document.getElementById("location").value.trim(),
+      description:document.getElementById("itemDescription").value.trim(),
+      photoName:photo?photo.name:"",
+      status:"Awaiting Review",
+      createdAt:serverTimestamp()
     });
-
-
-
-
-
-    /* SEARCH */
-
-
-
-    searchInput.addEventListener(
-
-        "input",
-
-        displayItems
-
-    );
-
-
-
-
-
-    /* POSSIBLE MATCH BUTTON */
-
-
-
-    function addMatchButtons() {
-
-
-
-
-
-        const matchButtons =
-
-            document.querySelectorAll(".match-button");
-
-
-
-
-
-        matchButtons.forEach(function(button) {
-
-
-
-
-
-            button.addEventListener("click", function() {
-
-
-
-
-
-                const selectedCase =
-
-                    button.getAttribute("data-case");
-
-
-
-
-
-                document.getElementById("caseNumber").value =
-
-                    selectedCase;
-
-
-
-
-
-                document.getElementById("match").scrollIntoView({
-
-
-
-                    behavior: "smooth"
-
-
-
-                });
-
-
-
-            });
-
-
-
-        });
-
-
-
-    }
-
-
-
-
-
-    /* REPORT FORM */
-
-    const reportForm =
-        document.getElementById("reportForm");
-
-    reportForm.addEventListener(
-        "submit",
-        async function(event) {
-
-            event.preventDefault();
-
-            const submitButton = reportForm.querySelector('button[type="submit"]');
-            submitButton.disabled = true;
-            submitButton.textContent = "Submitting...";
-
-            try {
-                await addDoc(collection(db, "reports"), {
-                    itemType: document.getElementById("itemType").value,
-                    dateLost: document.getElementById("dateLost").value,
-                    location: document.getElementById("location").value.trim(),
-                    description: document.getElementById("itemDescription").value.trim(),
-                    status: "pending",
-                    createdAt: serverTimestamp()
-                });
-
-                document.getElementById(
-                    "successMessage"
-                ).style.display = "block";
-
-                reportForm.reset();
-            } catch (error) {
-                console.error("Error saving report:", error);
-                alert("The report could not be saved. Please try again.");
-            } finally {
-                submitButton.disabled = false;
-                submitButton.textContent = "Submit for Review";
-            }
-        }
-    );
-
-
-    /* MATCH FORM */
-
-
-
-    const matchForm =
-
-        document.getElementById("matchForm");
-
-
-
-
-
-    matchForm.addEventListener(
-
-        "submit",
-
-        function(event) {
-
-
-
-
-
-            event.preventDefault();
-
-
-
-
-
-            alert(
-
-                "Thank you. Your possible match has been submitted privately. This is a prototype only."
-
-            );
-
-
-
-
-
-            matchForm.reset();
-
-
-
-        }
-
-    );
-
-
-
-
-
-    /* INITIAL DISPLAY */
-
-
-
-    displayItems();
-
-
-
+    document.getElementById("newCaseNumber").textContent=caseNumber;
+    document.getElementById("successMessage").style.display="block";
+    reportForm.reset();
+    await loadReports();
+    setTimeout(()=>document.getElementById("myReports").scrollIntoView({behavior:"smooth"}),600);
+  }catch(e){console.error(e);alert("The report could not be saved. Please try again.");}
+  finally{btn.disabled=false;btn.textContent="Submit for Review";}
+});
+
+document.getElementById("adminLoginButton").addEventListener("click",async()=>{
+  const email=document.getElementById("adminEmail").value.trim().toLowerCase();
+  const password=document.getElementById("adminPassword").value;
+  const msg=document.getElementById("adminLoginMessage");
+  if(email===ADMIN_EMAIL && password===ADMIN_PASSWORD){
+    sessionStorage.setItem(ADMIN_SESSION_KEY,"yes");
+    msg.textContent="";
+    updateAdminUI();
+    await loadReports();
+  }else msg.textContent="Incorrect administrator email or password.";
+});
+document.getElementById("adminLogoutButton").addEventListener("click",()=>{
+  sessionStorage.removeItem(ADMIN_SESSION_KEY); updateAdminUI();
+});
+document.getElementById("refreshAdminButton").addEventListener("click",loadReports);
+
+function updateAdminUI(){
+  document.getElementById("adminLoginPanel").classList.toggle("hidden",isAdmin());
+  document.getElementById("adminDashboard").classList.toggle("hidden",!isAdmin());
+  if(isAdmin()) displayAdminReports();
+}
+function displayAdminReports(){
+  const box=document.getElementById("adminReports");
+  if(!cachedReports.length){box.innerHTML="<p>No submitted reports yet.</p>";return;}
+  box.innerHTML=cachedReports.map(r=>`
+    <div class="admin-card">
+      <span class="status-badge">${esc(r.status||"Awaiting Review")}</span>
+      <h3>${esc(r.category||r.itemType||"Item")} — ${esc(r.caseNumber||"")}</h3>
+      <div class="details">${esc(r.userName||"")} • ${esc(r.userEmail||"")}</div>
+      <div class="details">${esc(r.dateLost||"")} • ${esc(r.location||"")}</div>
+      <p>${esc(r.description||"")}</p>
+      ${r.photoName?`<p class="details">Photo selected: ${esc(r.photoName)}</p>`:""}
+      <div class="admin-actions">
+        <button data-status="Approved" data-id="${r.id}">Approve</button>
+        <button data-status="More Information Needed" data-id="${r.id}">Need Info</button>
+        <button data-status="Resolved" data-id="${r.id}">Resolve</button>
+        <button data-delete="${r.id}">Delete</button>
+      </div>
+    </div>`).join("");
+  box.querySelectorAll("[data-status]").forEach(b=>b.addEventListener("click",async()=>{
+    await updateDoc(doc(db,"reports",b.dataset.id),{status:b.dataset.status});
+    await loadReports();
+  }));
+  box.querySelectorAll("[data-delete]").forEach(b=>b.addEventListener("click",async()=>{
+    if(confirm("Delete this report?")){await deleteDoc(doc(db,"reports",b.dataset.delete));await loadReports();}
+  }));
+}
+
+matchForm.addEventListener("submit",async event=>{
+  event.preventDefault();
+  const inputs=matchForm.querySelectorAll("input");
+  const textarea=matchForm.querySelector("textarea");
+  try{
+    await addDoc(collection(db,"matches"),{
+      caseNumber:document.getElementById("caseNumber").value.trim(),
+      name:inputs[1]?.value?.trim()||"",
+      message:textarea?.value?.trim()||"",
+      createdAt:serverTimestamp()
+    });
+    alert("Thank you. Your possible match has been submitted privately.");
+    matchForm.reset();
+  }catch(e){console.error(e);alert("The possible match could not be sent.");}
+});
+
+updateAccountUI();
+updateAdminUI();
+displayItems();
+loadReports();
 </script>
-
-
 
 </body>
 
