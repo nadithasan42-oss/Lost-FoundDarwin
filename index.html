@@ -2467,6 +2467,93 @@ body.admin-mode #adminDashboard { display:block !important; }
 })();
 </script>
 
+
+<script>
+(function () {
+  function byId(id){ return document.getElementById(id); }
+
+  function closeAccountMenu() {
+    const menu = byId("accountMenu");
+    if (!menu) return;
+    menu.classList.remove("open");
+    menu.style.display = "none";
+  }
+
+  function toggleAccountMenu(e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    const menu = byId("accountMenu");
+    if (!menu) return;
+    const open = menu.style.display === "block" || menu.classList.contains("open");
+    if (open) {
+      closeAccountMenu();
+    } else {
+      menu.classList.add("open");
+      menu.style.display = "block";
+      menu.style.position = "absolute";
+      menu.style.right = "0";
+      menu.style.zIndex = "99999";
+    }
+  }
+
+  function publicLogout(e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    try {
+      localStorage.removeItem("lostfound_public_user_final");
+    } catch (_) {}
+    closeAccountMenu();
+
+    // Return to the login gateway without depending on the Firebase module.
+    document.body.classList.remove("public-mode", "admin-mode");
+    const gateway = byId("authGateway");
+    if (gateway) gateway.style.display = "flex";
+    const pub = byId("gatewayPublicForm");
+    const adm = byId("gatewayAdminForm");
+    if (pub) pub.classList.remove("hidden");
+    if (adm) adm.classList.add("hidden");
+    const pubTab = byId("showPublicLogin");
+    const admTab = byId("showAdminLogin");
+    if (pubTab) pubTab.classList.add("active");
+    if (admTab) admTab.classList.remove("active");
+    const accountName = byId("accountName");
+    if (accountName) accountName.textContent = "Not signed in";
+    const loginMenu = byId("publicLoginMenu");
+    if (loginMenu) loginMenu.textContent = "Public User Login";
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const button = byId("menuButton");
+    const menu = byId("accountMenu");
+    const loginMenu = byId("publicLoginMenu");
+
+    if (menu) menu.style.display = "none";
+
+    if (button) {
+      // Clone removes any conflicting listeners left by earlier prototype code.
+      const cleanButton = button.cloneNode(true);
+      button.parentNode.replaceChild(cleanButton, button);
+      cleanButton.addEventListener("click", toggleAccountMenu);
+    }
+
+    if (loginMenu) {
+      loginMenu.addEventListener("click", function(e) {
+        let signedIn = false;
+        try { signedIn = !!localStorage.getItem("lostfound_public_user_final"); } catch (_) {}
+        if (signedIn) publicLogout(e);
+      });
+    }
+
+    document.addEventListener("click", function(e) {
+      const wrap = e.target && e.target.closest ? e.target.closest(".menu-wrap") : null;
+      if (!wrap) closeAccountMenu();
+    });
+
+    document.addEventListener("keydown", function(e) {
+      if (e.key === "Escape") closeAccountMenu();
+    });
+  });
+})();
+</script>
+
 </body>
 
 </html>
