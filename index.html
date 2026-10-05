@@ -1019,8 +1019,87 @@
             .auth-tabs { flex-direction:column; }
         }
 
+
+        /* RESTORED VISUAL ADMIN DASHBOARD */
+        .admin-dashboard-head {
+            display:flex; align-items:center; justify-content:space-between;
+            gap:16px; flex-wrap:wrap; margin-bottom:18px;
+        }
+        .admin-summary {
+            display:grid; grid-template-columns:repeat(4,minmax(0,1fr));
+            gap:12px; margin:18px 0 22px; max-width:1100px;
+        }
+        .admin-summary-card {
+            background:#fff; border:1px solid #dce5e1; border-radius:14px;
+            padding:16px; box-shadow:0 7px 20px rgba(0,0,0,.04);
+        }
+        .admin-summary-card strong { display:block; font-size:26px; margin-top:4px; }
+        .admin-summary-card span { font-size:12px; color:#64756f; font-weight:700; }
+        .admin-grid { max-width:1100px; }
+        .admin-card {
+            padding:0; overflow:hidden; border-left:6px solid #c7d5d0;
+            box-shadow:0 8px 24px rgba(0,0,0,.055);
+        }
+        .admin-card.status-awaiting-review { border-left-color:#d89b23; }
+        .admin-card.status-more-information-needed { border-left-color:#b66a35; }
+        .admin-card.status-approved { border-left-color:#2b8a63; }
+        .admin-card.status-resolved { border-left-color:#6c7785; opacity:.92; }
+        .admin-card-body { padding:17px 18px 18px; }
+        .admin-card-top {
+            display:flex; align-items:flex-start; justify-content:space-between;
+            gap:12px; margin-bottom:10px;
+        }
+        .admin-card h3 { margin:0; }
+        .admin-photo {
+            width:100%; height:210px; object-fit:cover; display:block;
+            background:#eef3f1; border-bottom:1px solid #dce5e1;
+        }
+        .admin-photo-placeholder {
+            height:95px; display:flex; align-items:center; justify-content:center;
+            background:#f4f7f6; color:#788781; font-size:13px;
+            border-bottom:1px solid #e2e9e6;
+        }
+        .admin-meta { margin:7px 0; }
+        .status-badge.status-awaiting-review { background:#fff2d5; color:#855b00; }
+        .status-badge.status-more-information-needed { background:#ffe5d3; color:#8a431d; }
+        .status-badge.status-approved { background:#dff4e9; color:#176b4d; }
+        .status-badge.status-resolved { background:#e8ebef; color:#4d5966; }
+        .admin-actions button[data-status="Approved"] { border-color:#2b8a63; color:#176b4d; }
+        .admin-actions button[data-status="More Information Needed"] { border-color:#b66a35; color:#8a431d; }
+        .admin-actions button[data-status="Resolved"] { border-color:#6c7785; color:#4d5966; }
+        .admin-actions button[data-delete] { border-color:#a54a4a; color:#8f3434; }
+        @media (max-width:800px) {
+            .admin-summary { grid-template-columns:repeat(2,minmax(0,1fr)); }
+            .admin-photo { height:190px; }
+        }
+        @media (max-width:450px) {
+            .admin-summary { grid-template-columns:1fr 1fr; }
+            .admin-card-top { flex-direction:column; }
+        }
+
 </style>
 
+
+<style>
+body:not(.public-mode):not(.admin-mode) > header,
+body:not(.public-mode):not(.admin-mode) > .hero,
+body:not(.public-mode):not(.admin-mode) > section,
+body:not(.public-mode):not(.admin-mode) > footer { display:none !important; }
+
+body.public-mode > .auth-gateway,
+body.admin-mode > .auth-gateway { display:none !important; }
+
+body.public-mode #administration { display:none !important; }
+
+body.admin-mode > header,
+body.admin-mode > .hero,
+body.admin-mode > section:not(#administration),
+body.admin-mode > footer { display:none !important; }
+
+body.admin-mode #administration { display:block !important; min-height:100vh; }
+body.admin-mode #adminLoginPanel { display:none !important; }
+body.admin-mode #adminDashboard { display:block !important; }
+</style>
 </head>
 
 
@@ -1777,7 +1856,15 @@
             <button class="button secondary" id="refreshAdminButton" type="button">Refresh Reports</button>
             <button class="button secondary" id="adminLogoutButton" type="button">Admin Log Out</button>
         </div>
-        <div id="adminReports" class="admin-grid"></div>
+        <div id="adminSummary" class="admin-summary">
+            <div class="admin-summary-card status-awaiting-review"><span>Awaiting Review</span><strong>0</strong></div>
+            <div class="admin-summary-card status-more-information-needed"><span>More Information Needed</span><strong>0</strong></div>
+            <div class="admin-summary-card status-approved"><span>Approved</span><strong>0</strong></div>
+            <div class="admin-summary-card status-resolved"><span>Resolved</span><strong>0</strong></div>
+        </div>
+        <div id="adminReports" class="admin-grid">
+            <div class="admin-card status-awaiting-review"><div class="admin-card-body"><h3>Reports</h3><p class="details">Loading submitted reports from Firebase…</p></div></div>
+        </div>
     </div>
 </section>
 
@@ -2111,318 +2198,273 @@
 
 
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import {
-    getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc,
-    serverTimestamp, query, orderBy
-} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyALANrgjPwHrs0LNl-M1PS7VNCmuOc9iQk",
-  authDomain: "lostfounddarwin.firebaseapp.com",
-  projectId: "lostfounddarwin",
-  storageBucket: "lostfounddarwin.firebasestorage.app",
-  messagingSenderId: "145296355069",
-  appId: "1:145296355069:web:b3abb1f77a957107141894",
-  measurementId: "G-DJTCKQK3MP"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-const SESSION_KEY = "lostfound_public_user_v5";
-const ADMIN_SESSION_KEY = "lostfound_admin_session_v5";
-const ADMIN_EMAIL = "admin@lostfound.com";
-const ADMIN_PASSWORD = "admin123";
-let selectedCategory = "All";
-
-let cachedReports = [];
-
-function showLoginGateway() {
-  document.body.classList.remove("public-mode","admin-mode");
-}
-function enterPublicMode() {
-  document.body.classList.remove("admin-mode");
-  document.body.classList.add("public-mode");
-  updateAccountUI();
-}
-function enterAdminMode() {
-  document.body.classList.remove("public-mode");
-  document.body.classList.add("admin-mode");
-  updateAdminUI();
-  loadReports();
-}
-function setGatewayTab(type) {
-  const isPublic = type === "public";
-  document.getElementById("gatewayPublicForm").classList.toggle("hidden", !isPublic);
-  document.getElementById("gatewayAdminForm").classList.toggle("hidden", isPublic);
-  document.getElementById("showPublicLogin").classList.toggle("active", isPublic);
-  document.getElementById("showAdminLogin").classList.toggle("active", !isPublic);
-}
-document.getElementById("showPublicLogin").addEventListener("click",()=>setGatewayTab("public"));
-document.getElementById("showAdminLogin").addEventListener("click",()=>setGatewayTab("admin"));
-
-document.getElementById("gatewayPublicButton").addEventListener("click",()=>{
-  const name=document.getElementById("gatewayPublicName").value.trim();
-  const email=document.getElementById("gatewayPublicEmail").value.trim().toLowerCase();
-  const password=document.getElementById("gatewayPublicPassword").value;
-  const msg=document.getElementById("gatewayPublicMessage");
-  if(!name || !email || !password){ msg.textContent="Please enter your name, email and password."; return; }
-  localStorage.setItem(SESSION_KEY,JSON.stringify({name,email}));
-  msg.textContent="";
-  enterPublicMode();
-});
-
-document.getElementById("gatewayAdminButton").addEventListener("click",()=>{
-  const email=document.getElementById("gatewayAdminEmail").value.trim().toLowerCase();
-  const password=document.getElementById("gatewayAdminPassword").value;
-  const msg=document.getElementById("gatewayAdminMessage");
-  if(email===ADMIN_EMAIL && password===ADMIN_PASSWORD){
-    sessionStorage.setItem(ADMIN_SESSION_KEY,"yes");
-    msg.textContent="";
-    enterAdminMode();
-  } else {
-    msg.textContent="Incorrect administrator email or password.";
-  }
-});
 
 
-const sampleLostItems = [
- {caseNumber:"LF-1024",category:"Electronics",title:"Black Wireless Headphones",location:"Darwin CBD",date:"2 October 2026",description:"Black over-ear wireless headphones."},
- {caseNumber:"LF-1027",category:"Keys",title:"Set of Keys",location:"Casuarina",date:"3 October 2026",description:"A small set of keys with a keyring."},
- {caseNumber:"LF-1031",category:"Bags",title:"Blue Backpack",location:"Darwin Waterfront",date:"4 October 2026",description:"Medium-sized blue backpack."}
-];
 
-const itemList = document.getElementById("itemList");
-const searchInput = document.getElementById("search");
-const reportForm = document.getElementById("reportForm");
-const matchForm = document.getElementById("matchForm");
 
-function esc(v="") {
-  return String(v).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
-}
-function getUser(){ try{return JSON.parse(localStorage.getItem(SESSION_KEY))||null}catch{return null} }
-function isAdmin(){ return sessionStorage.getItem(ADMIN_SESSION_KEY)==="yes"; }
-function makeCaseNumber(){
-  return "LF-" + String(Date.now()).slice(-7);
-}
-function tsText(v){
-  if (!v) return "";
-  if (v.toDate) return v.toDate().toLocaleString();
-  return String(v);
-}
 
-async function loadReports(){
-  try {
-    const snap = await getDocs(query(collection(db,"reports"), orderBy("createdAt","desc")));
-    cachedReports = snap.docs.map(d => ({id:d.id,...d.data()}));
-  } catch(e) {
-    console.error(e);
-    try {
-      const snap = await getDocs(collection(db,"reports"));
-      cachedReports = snap.docs.map(d => ({id:d.id,...d.data()}));
-    } catch(err) {
-      console.error(err);
-      cachedReports = [];
-    }
-  }
-  displayMyReports();
-  displayItems();
-  if (isAdmin()) displayAdminReports();
-}
+<script>
+(function () {
+  "use strict";
 
-function updateAccountUI(){
-  const user=getUser();
-  document.getElementById("accountName").textContent=user ? "Public User: "+user.name : "Not signed in";
-  document.getElementById("publicLoginMenu").textContent=user ? "Public User Log Out" : "Public User Login";
-  document.getElementById("loginPanel").style.display=user ? "none" : "block";
-  displayMyReports();
-}
+  const PUBLIC_KEY = "lostfound_public_user_final";
+  const ADMIN_KEY = "lostfound_admin_final";
+  const ADMIN_EMAIL = "admin@lostfound.com";
+  const ADMIN_PASSWORD = "admin123";
+  let reports = [];
+  let db = null, FS = null;
 
-document.getElementById("loginButton").addEventListener("click",()=>{
-  const name=document.getElementById("loginName").value.trim();
-  const email=document.getElementById("loginEmail").value.trim().toLowerCase();
-  if(!name||!email){alert("Please enter your name and email.");return;}
-  localStorage.setItem(SESSION_KEY,JSON.stringify({name,email}));
-  updateAccountUI();
-  document.getElementById("myReports").scrollIntoView({behavior:"smooth"});
-});
-
-const menuButton=document.getElementById("menuButton");
-const accountMenu=document.getElementById("accountMenu");
-menuButton.addEventListener("click",(e)=>{e.stopPropagation();accountMenu.classList.toggle("open");});
-document.addEventListener("click",()=>accountMenu.classList.remove("open"));
-accountMenu.addEventListener("click",e=>e.stopPropagation());
-document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>{
-  accountMenu.classList.remove("open");
-  document.getElementById(b.dataset.go)?.scrollIntoView({behavior:"smooth"});
-}));
-document.getElementById("publicLoginMenu").addEventListener("click",()=>{
-  accountMenu.classList.remove("open");
-  if(getUser()){ localStorage.removeItem(SESSION_KEY); updateAccountUI(); showLoginGateway(); }
-  else document.getElementById("myReports").scrollIntoView({behavior:"smooth"});
-});
-
-function displayMyReports(){
-  const box=document.getElementById("myReportsList");
-  const user=getUser();
-  if(!user){box.innerHTML="<p>Please sign in to see your reports.</p>";return;}
-  const reports=cachedReports.filter(r=>(r.userEmail||"").toLowerCase()===user.email);
-  if(!reports.length){box.innerHTML="<p>You have not submitted any reports yet.</p>";return;}
-  box.innerHTML=reports.map(r=>`
-    <div class="saved-report">
-      <span class="status-badge">${esc(r.status||"Awaiting Review")}</span>
-      <h3>${esc(r.category||r.itemType||"Item")} — ${esc(r.caseNumber||"")}</h3>
-      <div class="details">Lost: ${esc(r.dateLost||"")} • ${esc(r.location||"")}</div>
-      <p>${esc(r.description||"")}</p>
-      ${r.photoName?`<p class="details">Photo selected: ${esc(r.photoName)}</p>`:""}
-      <p class="details">Submitted: ${esc(tsText(r.createdAt))}</p>
-    </div>`).join("");
-}
-
-function approvedItems(){
-  const approved=cachedReports.filter(r=>r.status==="Approved").map(r=>({
-    caseNumber:r.caseNumber||"",
-    category:r.category||r.itemType||"Other",
-    title:(r.category||r.itemType||"Item")+" report",
-    location:r.location||"",
-    date:r.dateLost||"",
-    description:r.description||""
-  }));
-  return sampleLostItems.concat(approved);
-}
-function displayItems(){
-  const q=(searchInput.value||"").toLowerCase();
-  const items=approvedItems().filter(i=>
-    (selectedCategory==="All"||i.category===selectedCategory) &&
-    [i.title,i.location,i.description,i.caseNumber].some(v=>String(v).toLowerCase().includes(q))
+  const $ = id => document.getElementById(id);
+  const safe = v => String(v ?? "").replace(/[&<>"']/g, c =>
+    ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c])
   );
-  itemList.innerHTML=items.length?items.map(i=>`
-    <div class="card">
-      <span class="tag">${esc(i.category)}</span>
-      <h3>${esc(i.title)}</h3>
-      <div class="details">${esc(i.caseNumber)} • ${esc(i.date)} • ${esc(i.location)}</div>
-      <p>${esc(i.description)}</p>
-      <button class="button secondary match-button" data-case="${esc(i.caseNumber)}">I May Have Found This</button>
-    </div>`).join(""):"<p>No matching lost items found.</p>";
-  document.querySelectorAll(".match-button").forEach(b=>b.addEventListener("click",()=>{
-    document.getElementById("caseNumber").value=b.dataset.case;
-    document.getElementById("match").scrollIntoView({behavior:"smooth"});
-  }));
-}
-document.querySelectorAll(".filter-button").forEach(b=>b.addEventListener("click",()=>{
-  document.querySelectorAll(".filter-button").forEach(x=>x.classList.remove("active"));
-  b.classList.add("active"); selectedCategory=b.dataset.category; displayItems();
-}));
-searchInput.addEventListener("input",displayItems);
+  const user = () => { try { return JSON.parse(localStorage.getItem(PUBLIC_KEY)); } catch { return null; } };
+  const isAdmin = () => sessionStorage.getItem(ADMIN_KEY) === "yes";
+  const statusClass = s => "status-" + String(s || "Awaiting Review").toLowerCase()
+    .replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
 
-reportForm.addEventListener("submit",async event=>{
-  event.preventDefault();
-  const user=getUser();
-  if(!user){alert("Please sign in as a Public User before submitting a report.");document.getElementById("myReports").scrollIntoView({behavior:"smooth"});return;}
-  const btn=reportForm.querySelector('button[type="submit"]');
-  btn.disabled=true; btn.textContent="Submitting...";
-  const photo=document.getElementById("itemPhoto")?.files?.[0];
-  const caseNumber=makeCaseNumber();
-  try{
-    await addDoc(collection(db,"reports"),{
-      caseNumber,
-      userEmail:user.email,
-      userName:user.name,
-      category:document.getElementById("itemType").value,
-      dateLost:document.getElementById("dateLost").value,
-      location:document.getElementById("location").value.trim(),
-      description:document.getElementById("itemDescription").value.trim(),
-      photoName:photo?photo.name:"",
-      status:"Awaiting Review",
-      createdAt:serverTimestamp()
+  function showTab(which) {
+    const pub = which === "public";
+    $("gatewayPublicForm")?.classList.toggle("hidden", !pub);
+    $("gatewayAdminForm")?.classList.toggle("hidden", pub);
+    $("showPublicLogin")?.classList.toggle("active", pub);
+    $("showAdminLogin")?.classList.toggle("active", !pub);
+  }
+
+  function showGateway(which="public") {
+    document.body.classList.remove("public-mode","admin-mode");
+    if ($("authGateway")) $("authGateway").style.display = "flex";
+    showTab(which);
+  }
+
+  function publicMode() {
+    document.body.classList.remove("admin-mode");
+    document.body.classList.add("public-mode");
+    if ($("authGateway")) $("authGateway").style.display = "none";
+    updatePublic();
+  }
+
+  function adminMode() {
+    document.body.classList.remove("public-mode");
+    document.body.classList.add("admin-mode");
+    if ($("authGateway")) $("authGateway").style.display = "none";
+    if ($("adminLoginPanel")) $("adminLoginPanel").style.display = "none";
+    if ($("adminDashboard")) {
+      $("adminDashboard").classList.remove("hidden");
+      $("adminDashboard").style.display = "block";
+    }
+    renderAdmin();
+    loadReports();
+  }
+
+  function updatePublic() {
+    const u = user();
+    if ($("accountName")) $("accountName").textContent = u ? "Public User: " + u.name : "Not signed in";
+    if ($("publicLoginMenu")) $("publicLoginMenu").textContent = u ? "Public User Log Out" : "Public User Login";
+    if ($("loginPanel")) $("loginPanel").style.display = u ? "none" : "block";
+    renderMine();
+    renderBrowse();
+  }
+
+  function renderAdmin() {
+    const counts = {"Awaiting Review":0,"More Information Needed":0,"Approved":0,"Resolved":0};
+    reports.forEach(r => { const s=r.status||"Awaiting Review"; if (s in counts) counts[s]++; });
+
+    if ($("adminSummary")) {
+      $("adminSummary").innerHTML = Object.entries(counts).map(([s,n]) =>
+        `<div class="admin-summary-card ${statusClass(s)}"><span>${safe(s)}</span><strong>${n}</strong></div>`
+      ).join("");
+    }
+
+    const box = $("adminReports");
+    if (!box) return;
+
+    if (!reports.length) {
+      box.innerHTML = `<div class="admin-card status-awaiting-review"><div class="admin-card-body">
+        <h3>Report Management Dashboard</h3>
+        <p class="details">No submitted reports yet. New public reports will appear here.</p>
+      </div></div>`;
+      return;
+    }
+
+    box.innerHTML = reports.map(r => {
+      const s = r.status || "Awaiting Review", sc = statusClass(s);
+      const photoURL = r.photoUrl || r.imageUrl || r.photoData || "";
+      const photo = photoURL
+        ? `<img class="admin-photo" src="${safe(photoURL)}" alt="Submitted item photo">`
+        : (r.photoName ? `<div class="admin-photo-placeholder">Photo: ${safe(r.photoName)}</div>` : "");
+      return `<div class="admin-card ${sc}">
+        ${photo}
+        <div class="admin-card-body">
+          <div class="admin-card-top">
+            <div><h3>${safe(r.category || r.itemType || "Item")}</h3>
+            <div class="details">${safe(r.caseNumber || "No case number")}</div></div>
+            <span class="status-badge ${sc}">${safe(s)}</span>
+          </div>
+          <div class="details admin-meta"><strong>Reported by:</strong> ${safe(r.userName || "Unknown")} ${r.userEmail ? "• "+safe(r.userEmail) : ""}</div>
+          <div class="details admin-meta"><strong>Lost:</strong> ${safe(r.dateLost || "")} ${r.location ? "• "+safe(r.location) : ""}</div>
+          <p>${safe(r.description || "")}</p>
+          <div class="admin-actions">
+            <button data-status="Approved" data-id="${safe(r.id||"")}">Approve</button>
+            <button data-status="More Information Needed" data-id="${safe(r.id||"")}">Need Info</button>
+            <button data-status="Resolved" data-id="${safe(r.id||"")}">Resolve</button>
+            <button data-delete="${safe(r.id||"")}">Delete</button>
+          </div>
+        </div>
+      </div>`;
+    }).join("");
+
+    box.querySelectorAll("[data-status]").forEach(b => b.onclick = () => changeStatus(b.dataset.id,b.dataset.status));
+    box.querySelectorAll("[data-delete]").forEach(b => b.onclick = () => deleteReport(b.dataset.delete));
+  }
+
+  function renderMine() {
+    const box = $("myReportsList"); if (!box) return;
+    const u = user();
+    if (!u) { box.innerHTML = "<p>Please sign in to view your reports.</p>"; return; }
+    const mine = reports.filter(r => String(r.userEmail||"").toLowerCase() === u.email);
+    box.innerHTML = mine.length ? mine.map(r =>
+      `<div class="my-report-card"><strong>${safe(r.caseNumber||"Report")}</strong>
+       <p>${safe(r.category||r.itemType||"Item")} • ${safe(r.location||"")}</p>
+       <span class="status-badge ${statusClass(r.status)}">${safe(r.status||"Awaiting Review")}</span></div>`
+    ).join("") : "<p>You have not submitted any reports yet.</p>";
+  }
+
+  function renderBrowse() {
+    const box = $("itemList"); if (!box) return;
+    const approved = reports.filter(r => r.status === "Approved");
+    const sample = [
+      {caseNumber:"LF-1024",category:"Electronics",location:"Darwin CBD",dateLost:"2 October 2026",description:"Black over-ear wireless headphones."},
+      {caseNumber:"LF-1027",category:"Keys",location:"Casuarina",dateLost:"3 October 2026",description:"A small set of keys with a keyring."},
+      {caseNumber:"LF-1031",category:"Bags",location:"Darwin Waterfront",dateLost:"4 October 2026",description:"Medium-sized blue backpack."}
+    ];
+    box.innerHTML = [...approved,...sample].map(r =>
+      `<div class="item-card"><span class="tag">${safe(r.category||"Item")}</span>
+       <h3>${safe(r.category||"Lost Item")}</h3><p>${safe(r.description||"")}</p>
+       <div class="details">${safe(r.location||"")} • ${safe(r.dateLost||"")}</div>
+       <strong>${safe(r.caseNumber||"")}</strong></div>`
+    ).join("");
+  }
+
+  async function loadReports() {
+    if (!db || !FS) { renderAdmin(); renderMine(); renderBrowse(); return; }
+    try {
+      const snap = await FS.getDocs(FS.collection(db,"reports"));
+      reports = snap.docs.map(d => ({id:d.id,...d.data()}));
+    } catch(e) { console.error(e); }
+    renderAdmin(); renderMine(); renderBrowse();
+  }
+
+  async function changeStatus(id,status) {
+    if (db && FS && id) {
+      try { await FS.updateDoc(FS.doc(db,"reports",id),{status}); await loadReports(); return; }
+      catch(e) { console.error(e); }
+    }
+    const r=reports.find(x=>x.id===id); if(r){r.status=status;renderAdmin();renderMine();renderBrowse();}
+  }
+
+  async function deleteReport(id) {
+    if (!confirm("Delete this report?")) return;
+    if (db && FS && id) {
+      try { await FS.deleteDoc(FS.doc(db,"reports",id)); await loadReports(); return; }
+      catch(e) { console.error(e); }
+    }
+    reports=reports.filter(x=>x.id!==id); renderAdmin();renderMine();renderBrowse();
+  }
+
+  async function connectFirebase() {
+    try {
+      const A = await import("https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js");
+      const F = await import("https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js");
+      const config = {
+        apiKey:"AIzaSyALANrgjPwHrs0LNl-M1PS7VNCmuOc9iQk",
+        authDomain:"lostfounddarwin.firebaseapp.com",
+        projectId:"lostfounddarwin",
+        storageBucket:"lostfounddarwin.firebasestorage.app",
+        messagingSenderId:"145296355069",
+        appId:"1:145296355069:web:b3abb1f77a957107141894",
+        measurementId:"G-DJTCKQK3MP"
+      };
+      db = F.getFirestore(A.initializeApp(config)); FS=F; await loadReports();
+    } catch(e) { console.warn("Firebase unavailable in preview; login/dashboard remains testable.",e); }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    $("showPublicLogin")?.addEventListener("click",()=>showTab("public"));
+    $("showAdminLogin")?.addEventListener("click",()=>showTab("admin"));
+
+    $("gatewayPublicButton")?.addEventListener("click", () => {
+      const name=$("gatewayPublicName").value.trim();
+      const email=$("gatewayPublicEmail").value.trim().toLowerCase();
+      const password=$("gatewayPublicPassword").value;
+      if(!name||!email||!password){$("gatewayPublicMessage").textContent="Please enter your name, email and password.";return;}
+      localStorage.setItem(PUBLIC_KEY,JSON.stringify({name,email}));
+      $("gatewayPublicMessage").textContent=""; publicMode();
     });
-    document.getElementById("newCaseNumber").textContent=caseNumber;
-    document.getElementById("successMessage").style.display="block";
-    reportForm.reset();
-    await loadReports();
-    setTimeout(()=>document.getElementById("myReports").scrollIntoView({behavior:"smooth"}),600);
-  }catch(e){console.error(e);alert("The report could not be saved. Please try again.");}
-  finally{btn.disabled=false;btn.textContent="Submit for Review";}
-});
 
-document.getElementById("adminLoginButton").addEventListener("click",async()=>{
-  const email=document.getElementById("adminEmail").value.trim().toLowerCase();
-  const password=document.getElementById("adminPassword").value;
-  const msg=document.getElementById("adminLoginMessage");
-  if(email===ADMIN_EMAIL && password===ADMIN_PASSWORD){
-    sessionStorage.setItem(ADMIN_SESSION_KEY,"yes");
-    msg.textContent="";
-    updateAdminUI();
-    await loadReports();
-  }else msg.textContent="Incorrect administrator email or password.";
-});
-document.getElementById("adminLogoutButton").addEventListener("click",()=>{
-  sessionStorage.removeItem(ADMIN_SESSION_KEY); updateAdminUI(); showLoginGateway();
-});
-document.getElementById("refreshAdminButton").addEventListener("click",loadReports);
+    const doAdminLogin = (emailEl, passwordEl, messageEl) => {
+      const email = $(emailEl)?.value.trim().toLowerCase() || "";
+      const password = $(passwordEl)?.value || "";
+      if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+        sessionStorage.setItem(ADMIN_KEY,"yes");
+        if ($(messageEl)) $(messageEl).textContent = "";
+        adminMode();
+      } else if ($(messageEl)) {
+        $(messageEl).textContent = "Incorrect administrator email or password.";
+      }
+    };
 
-function updateAdminUI(){
-  document.getElementById("adminLoginPanel").classList.toggle("hidden",isAdmin());
-  document.getElementById("adminDashboard").classList.toggle("hidden",!isAdmin());
-  if(isAdmin()) displayAdminReports();
-}
-function displayAdminReports(){
-  const box=document.getElementById("adminReports");
-  if(!cachedReports.length){box.innerHTML="<p>No submitted reports yet.</p>";return;}
-  box.innerHTML=cachedReports.map(r=>`
-    <div class="admin-card">
-      <span class="status-badge">${esc(r.status||"Awaiting Review")}</span>
-      <h3>${esc(r.category||r.itemType||"Item")} — ${esc(r.caseNumber||"")}</h3>
-      <div class="details">${esc(r.userName||"")} • ${esc(r.userEmail||"")}</div>
-      <div class="details">${esc(r.dateLost||"")} • ${esc(r.location||"")}</div>
-      <p>${esc(r.description||"")}</p>
-      ${r.photoName?`<p class="details">Photo selected: ${esc(r.photoName)}</p>`:""}
-      <div class="admin-actions">
-        <button data-status="Approved" data-id="${r.id}">Approve</button>
-        <button data-status="More Information Needed" data-id="${r.id}">Need Info</button>
-        <button data-status="Resolved" data-id="${r.id}">Resolve</button>
-        <button data-delete="${r.id}">Delete</button>
-      </div>
-    </div>`).join("");
-  box.querySelectorAll("[data-status]").forEach(b=>b.addEventListener("click",async()=>{
-    await updateDoc(doc(db,"reports",b.dataset.id),{status:b.dataset.status});
-    await loadReports();
-  }));
-  box.querySelectorAll("[data-delete]").forEach(b=>b.addEventListener("click",async()=>{
-    if(confirm("Delete this report?")){await deleteDoc(doc(db,"reports",b.dataset.delete));await loadReports();}
-  }));
-}
+    $("gatewayAdminButton")?.addEventListener("click", () =>
+      doAdminLogin("gatewayAdminEmail","gatewayAdminPassword","gatewayAdminMessage")
+    );
+    $("adminLoginButton")?.addEventListener("click", () =>
+      doAdminLogin("adminEmail","adminPassword","adminLoginMessage")
+    );
 
-matchForm.addEventListener("submit",async event=>{
-  event.preventDefault();
-  const inputs=matchForm.querySelectorAll("input");
-  const textarea=matchForm.querySelector("textarea");
-  try{
-    await addDoc(collection(db,"matches"),{
-      caseNumber:document.getElementById("caseNumber").value.trim(),
-      name:inputs[1]?.value?.trim()||"",
-      message:textarea?.value?.trim()||"",
-      createdAt:serverTimestamp()
+    ["gatewayPublicName","gatewayPublicEmail","gatewayPublicPassword"].forEach(id =>
+      $(id)?.addEventListener("keydown", e => { if (e.key === "Enter") $("gatewayPublicButton")?.click(); })
+    );
+    ["gatewayAdminEmail","gatewayAdminPassword"].forEach(id =>
+      $(id)?.addEventListener("keydown", e => { if (e.key === "Enter") $("gatewayAdminButton")?.click(); })
+    );
+    ["adminEmail","adminPassword"].forEach(id =>
+      $(id)?.addEventListener("keydown", e => { if (e.key === "Enter") $("adminLoginButton")?.click(); })
+    );
+
+    $("adminLogoutButton")?.addEventListener("click",()=>{sessionStorage.removeItem(ADMIN_KEY);showGateway("admin");});
+    $("refreshAdminButton")?.addEventListener("click",loadReports);
+    $("publicLoginMenu")?.addEventListener("click",()=>{if(user())localStorage.removeItem(PUBLIC_KEY);showGateway("public");});
+    $("menuButton")?.addEventListener("click",()=>$("accountMenu")?.classList.toggle("show"));
+    document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>{
+      const t=$(b.dataset.go); if(t)t.scrollIntoView({behavior:"smooth"});
+    }));
+
+    const form=$("reportForm");
+    if(form) form.addEventListener("submit",async e=>{
+      e.preventDefault();
+      const u=user(); if(!u){alert("Please sign in first.");showGateway("public");return;}
+      const r={
+        id:"local-"+Date.now(), caseNumber:"LF-"+String(Date.now()).slice(-7),
+        userEmail:u.email,userName:u.name,
+        category:$("itemType")?.value||"Other",
+        dateLost:$("dateLost")?.value||"",
+        location:$("location")?.value||"",
+        description:$("itemDescription")?.value||"",
+        photoName:$("itemPhoto")?.files?.[0]?.name||"",
+        status:"Awaiting Review"
+      };
+      if(db&&FS){
+        try{await FS.addDoc(FS.collection(db,"reports"),{...r,createdAt:FS.serverTimestamp()});await loadReports();}
+        catch(err){console.error(err);reports.unshift(r);}
+      } else reports.unshift(r);
+      renderAdmin();renderMine();renderBrowse();form.reset();
+      alert("Report submitted. Case number: "+r.caseNumber);
     });
-    alert("Thank you. Your possible match has been submitted privately.");
-    matchForm.reset();
-  }catch(e){console.error(e);alert("The possible match could not be sent.");}
-});
 
-updateAccountUI();
-updateAdminUI();
-displayItems();
-loadReports();
-
-if (isAdmin()) {
-  enterAdminMode();
-} else if (getUser()) {
-  enterPublicMode();
-} else {
-  showLoginGateway();
-}
+    if(isAdmin()) adminMode(); else if(user()) publicMode(); else showGateway("public");
+    connectFirebase();
+  });
+})();
 </script>
 
 </body>
