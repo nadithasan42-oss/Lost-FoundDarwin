@@ -2421,6 +2421,14 @@ body.admin-mode #adminDashboard { display:block !important; }
       doAdminLogin("adminEmail","adminPassword","adminLoginMessage")
     );
 
+    $("loginButton")?.addEventListener("click",()=>{
+      const name=$("loginName")?.value.trim() || "";
+      const email=$("loginEmail")?.value.trim().toLowerCase() || "";
+      if(!name || !email){ alert("Please enter your name and email."); return; }
+      localStorage.setItem(PUBLIC_KEY,JSON.stringify({name,email}));
+      publicMode();
+    });
+
     ["gatewayPublicName","gatewayPublicEmail","gatewayPublicPassword"].forEach(id =>
       $(id)?.addEventListener("keydown", e => { if (e.key === "Enter") $("gatewayPublicButton")?.click(); })
     );
@@ -2433,10 +2441,53 @@ body.admin-mode #adminDashboard { display:block !important; }
 
     $("adminLogoutButton")?.addEventListener("click",()=>{sessionStorage.removeItem(ADMIN_KEY);showGateway("admin");});
     $("refreshAdminButton")?.addEventListener("click",loadReports);
-    $("publicLoginMenu")?.addEventListener("click",()=>{if(user())localStorage.removeItem(PUBLIC_KEY);showGateway("public");});
-    $("menuButton")?.addEventListener("click",()=>$("accountMenu")?.classList.toggle("show"));
+    $("publicLoginMenu")?.addEventListener("click",(e)=>{
+      e.preventDefault();
+      $("accountMenu")?.classList.remove("open");
+      if(user()) localStorage.removeItem(PUBLIC_KEY);
+      showGateway("public");
+    });
+    $("menuButton")?.addEventListener("click",(e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+      $("accountMenu")?.classList.toggle("open");
+    });
     document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>{
-      const t=$(b.dataset.go); if(t)t.scrollIntoView({behavior:"smooth"});
+      $("accountMenu")?.classList.remove("open");
+      const target=b.dataset.go;
+      if(target==="administration"){
+        sessionStorage.removeItem(ADMIN_KEY);
+        showGateway("admin");
+        return;
+      }
+      const t=$(target);
+      if(t)t.scrollIntoView({behavior:"smooth"});
+    }));
+    document.addEventListener("click",(e)=>{
+      if(!e.target.closest(".menu-wrap")) $("accountMenu")?.classList.remove("open");
+    });
+    document.addEventListener("keydown",(e)=>{
+      if(e.key==="Escape") $("accountMenu")?.classList.remove("open");
+    });
+
+
+    let activeCategory="All";
+    function applyBrowseFilter(){
+      const q=($("search")?.value||"").trim().toLowerCase();
+      document.querySelectorAll("#itemList .item-card").forEach(card=>{
+        const text=card.textContent.toLowerCase();
+        const cat=(card.querySelector(".tag")?.textContent||"").trim();
+        const okCat=activeCategory==="All" || cat===activeCategory;
+        const okSearch=!q || text.includes(q);
+        card.style.display=(okCat&&okSearch)?"":"none";
+      });
+    }
+    $("search")?.addEventListener("input",applyBrowseFilter);
+    document.querySelectorAll(".filter-button").forEach(btn=>btn.addEventListener("click",()=>{
+      document.querySelectorAll(".filter-button").forEach(x=>x.classList.remove("active"));
+      btn.classList.add("active");
+      activeCategory=btn.dataset.category||"All";
+      applyBrowseFilter();
     }));
 
     const form=$("reportForm");
@@ -2461,6 +2512,24 @@ body.admin-mode #adminDashboard { display:block !important; }
       alert("Report submitted. Case number: "+r.caseNumber);
     });
 
+
+    const matchForm=$("matchForm");
+    if(matchForm) matchForm.addEventListener("submit",async e=>{
+      e.preventDefault();
+      const fields=matchForm.querySelectorAll("input,textarea");
+      const match={
+        caseNumber:$("caseNumber")?.value.trim()||"",
+        name:fields[1]?.value.trim()||"",
+        message:matchForm.querySelector("textarea")?.value.trim()||""
+      };
+      if(db&&FS){
+        try{ await FS.addDoc(FS.collection(db,"matches"),{...match,createdAt:FS.serverTimestamp()}); }
+        catch(err){ console.error(err); }
+      }
+      alert("Possible match sent privately to the LostFound team.");
+      matchForm.reset();
+    });
+
     if(isAdmin()) adminMode(); else if(user()) publicMode(); else showGateway("public");
     connectFirebase();
   });
@@ -2468,91 +2537,7 @@ body.admin-mode #adminDashboard { display:block !important; }
 </script>
 
 
-<script>
-(function () {
-  function byId(id){ return document.getElementById(id); }
 
-  function closeAccountMenu() {
-    const menu = byId("accountMenu");
-    if (!menu) return;
-    menu.classList.remove("open");
-    menu.style.display = "none";
-  }
-
-  function toggleAccountMenu(e) {
-    if (e) { e.preventDefault(); e.stopPropagation(); }
-    const menu = byId("accountMenu");
-    if (!menu) return;
-    const open = menu.style.display === "block" || menu.classList.contains("open");
-    if (open) {
-      closeAccountMenu();
-    } else {
-      menu.classList.add("open");
-      menu.style.display = "block";
-      menu.style.position = "absolute";
-      menu.style.right = "0";
-      menu.style.zIndex = "99999";
-    }
-  }
-
-  function publicLogout(e) {
-    if (e) { e.preventDefault(); e.stopPropagation(); }
-    try {
-      localStorage.removeItem("lostfound_public_user_final");
-    } catch (_) {}
-    closeAccountMenu();
-
-    // Return to the login gateway without depending on the Firebase module.
-    document.body.classList.remove("public-mode", "admin-mode");
-    const gateway = byId("authGateway");
-    if (gateway) gateway.style.display = "flex";
-    const pub = byId("gatewayPublicForm");
-    const adm = byId("gatewayAdminForm");
-    if (pub) pub.classList.remove("hidden");
-    if (adm) adm.classList.add("hidden");
-    const pubTab = byId("showPublicLogin");
-    const admTab = byId("showAdminLogin");
-    if (pubTab) pubTab.classList.add("active");
-    if (admTab) admTab.classList.remove("active");
-    const accountName = byId("accountName");
-    if (accountName) accountName.textContent = "Not signed in";
-    const loginMenu = byId("publicLoginMenu");
-    if (loginMenu) loginMenu.textContent = "Public User Login";
-  }
-
-  document.addEventListener("DOMContentLoaded", function () {
-    const button = byId("menuButton");
-    const menu = byId("accountMenu");
-    const loginMenu = byId("publicLoginMenu");
-
-    if (menu) menu.style.display = "none";
-
-    if (button) {
-      // Clone removes any conflicting listeners left by earlier prototype code.
-      const cleanButton = button.cloneNode(true);
-      button.parentNode.replaceChild(cleanButton, button);
-      cleanButton.addEventListener("click", toggleAccountMenu);
-    }
-
-    if (loginMenu) {
-      loginMenu.addEventListener("click", function(e) {
-        let signedIn = false;
-        try { signedIn = !!localStorage.getItem("lostfound_public_user_final"); } catch (_) {}
-        if (signedIn) publicLogout(e);
-      });
-    }
-
-    document.addEventListener("click", function(e) {
-      const wrap = e.target && e.target.closest ? e.target.closest(".menu-wrap") : null;
-      if (!wrap) closeAccountMenu();
-    });
-
-    document.addEventListener("keydown", function(e) {
-      if (e.key === "Escape") closeAccountMenu();
-    });
-  });
-})();
-</script>
 
 </body>
 
