@@ -1077,6 +1077,19 @@
             .admin-card-top { flex-direction:column; }
         }
 
+        /* POSSIBLE MATCH BUTTON + MODAL */
+        .match-button { margin-top:14px; width:100%; padding:11px 14px; border:1px solid #176b5b; border-radius:9px; background:#176b5b; color:white; cursor:pointer; font-weight:700; }
+        .match-button:hover { background:#125648; }
+        .match-modal { display:none; position:fixed; inset:0; z-index:3000; background:rgba(10,30,25,.55); padding:20px; align-items:center; justify-content:center; }
+        .match-modal.open { display:flex; }
+        .match-modal-card { width:min(600px,100%); max-height:90vh; overflow:auto; background:white; border-radius:18px; padding:24px; box-shadow:0 20px 60px rgba(0,0,0,.22); }
+        .match-modal-head { display:flex; justify-content:space-between; gap:15px; align-items:flex-start; }
+        .match-close { border:0; background:#eef6f2; width:38px; height:38px; border-radius:9px; cursor:pointer; font-size:22px; }
+        .match-modal form { display:grid; grid-template-columns:1fr; max-width:none; margin-top:18px; }
+        .match-success { display:none; margin-top:15px; padding:12px; border-radius:8px; background:#d9f1e6; color:#176b5b; }
+        .admin-error { margin:12px 0; padding:12px; border-radius:8px; background:#fde8e8; color:#8f3434; display:none; }
+        .admin-match { margin-top:12px; padding:12px; border-radius:10px; background:#f4f7f6; border:1px solid #dce5e1; }
+
 </style>
 
 
@@ -1852,6 +1865,7 @@ body.admin-mode #adminDashboard { display:block !important; }
         <p id="adminLoginMessage" class="prototype-note"></p>
     </div>
     <div id="adminDashboard" class="hidden">
+        <div id="adminError" class="admin-error"></div>
         <div class="buttons">
             <button class="button secondary" id="refreshAdminButton" type="button">Refresh Reports</button>
             <button class="button secondary" id="adminLogoutButton" type="button">Admin Log Out</button>
@@ -2017,6 +2031,24 @@ body.admin-mode #adminDashboard { display:block !important; }
 
 
 
+
+
+<!-- POSSIBLE MATCH MODAL -->
+<div class="match-modal" id="matchModal" role="dialog" aria-modal="true" aria-labelledby="matchModalTitle">
+  <div class="match-modal-card">
+    <div class="match-modal-head"><div><span class="small-title">Private Contact</span><h2 id="matchModalTitle" style="margin:6px 0 0">I May Have Found This</h2></div><button class="match-close" id="closeMatchModal" type="button" aria-label="Close">×</button></div>
+    <p class="description">Your message is private. It will be sent to the LostFound team for review.</p>
+    <form id="quickMatchForm">
+      <label>Case Number<input id="quickMatchCase" type="text" readonly required></label>
+      <label>Your Name<input id="quickMatchName" type="text" required></label>
+      <label>Your Email<input id="quickMatchEmail" type="email" required></label>
+      <label>Where did you find it?<input id="quickMatchLocation" type="text" required placeholder="Example: Casuarina Shopping Centre"></label>
+      <label>Message<textarea id="quickMatchMessage" required placeholder="Explain why you think this may be the same item..."></textarea></label>
+      <button class="button primary" type="submit">Send Possible Match</button>
+    </form>
+    <div class="match-success" id="quickMatchSuccess">Possible match sent privately to the LostFound team.</div>
+  </div>
+</div>
 
 <!-- HELP -->
 
@@ -2212,6 +2244,7 @@ body.admin-mode #adminDashboard { display:block !important; }
   const ADMIN_EMAIL = "admin@lostfound.com";
   const ADMIN_PASSWORD = "admin123";
   let reports = [];
+  let matches = [];
   let db = null, FS = null;
 
   const $ = id => document.getElementById(id);
@@ -2304,6 +2337,7 @@ body.admin-mode #adminDashboard { display:block !important; }
           <div class="details admin-meta"><strong>Reported by:</strong> ${safe(r.userName || "Unknown")} ${r.userEmail ? "• "+safe(r.userEmail) : ""}</div>
           <div class="details admin-meta"><strong>Lost:</strong> ${safe(r.dateLost || "")} ${r.location ? "• "+safe(r.location) : ""}</div>
           <p>${safe(r.description || "")}</p>
+          ${matches.filter(m => m.caseNumber === r.caseNumber).map(m => `<div class="admin-match"><strong>Possible match</strong><div class="details">${safe(m.name||"Unknown")} ${m.email ? "• "+safe(m.email) : ""}</div><div class="details">Found near: ${safe(m.foundLocation||"")}</div><p>${safe(m.message||"")}</p></div>`).join("")}
           <div class="admin-actions">
             <button data-status="Approved" data-id="${safe(r.id||"")}">Approve</button>
             <button data-status="More Information Needed" data-id="${safe(r.id||"")}">Need Info</button>
@@ -2342,34 +2376,49 @@ body.admin-mode #adminDashboard { display:block !important; }
       `<div class="item-card"><span class="tag">${safe(r.category||"Item")}</span>
        <h3>${safe(r.category||"Lost Item")}</h3><p>${safe(r.description||"")}</p>
        <div class="details">${safe(r.location||"")} • ${safe(r.dateLost||"")}</div>
-       <strong>${safe(r.caseNumber||"")}</strong></div>`
+       <strong>${safe(r.caseNumber||"")}</strong><button type="button" class="match-button" data-match-case="${safe(r.caseNumber||"")}">I May Have Found This</button></div>`
     ).join("");
+    box.querySelectorAll("[data-match-case]").forEach(btn => btn.addEventListener("click", () => openMatchModal(btn.dataset.matchCase)));
   }
 
   async function loadReports() {
     if (!db || !FS) { renderAdmin(); renderMine(); renderBrowse(); return; }
     try {
-      const snap = await FS.getDocs(FS.collection(db,"reports"));
-      reports = snap.docs.map(d => ({id:d.id,...d.data()}));
-    } catch(e) { console.error(e); }
+      const [reportSnap, matchSnap] = await Promise.all([
+        FS.getDocs(FS.collection(db,"reports")),
+        FS.getDocs(FS.collection(db,"matches"))
+      ]);
+      reports = reportSnap.docs.map(d => ({...d.data(), id:d.id}));
+      matches = matchSnap.docs.map(d => ({...d.data(), id:d.id}));
+      if ($("adminError")) { $("adminError").style.display="none"; $("adminError").textContent=""; }
+    } catch(e) {
+      console.error(e);
+      if ($("adminError")) { $("adminError").style.display="block"; $("adminError").textContent="Firebase could not load reports. Check Firestore rules and your internet connection."; }
+    }
     renderAdmin(); renderMine(); renderBrowse();
   }
 
   async function changeStatus(id,status) {
-    if (db && FS && id) {
-      try { await FS.updateDoc(FS.doc(db,"reports",id),{status}); await loadReports(); return; }
-      catch(e) { console.error(e); }
+    if (!db || !FS || !id) { alert("Firebase is not connected. The status was not changed."); return; }
+    try {
+      await FS.updateDoc(FS.doc(db,"reports",id),{status,updatedAt:FS.serverTimestamp()});
+      await loadReports();
+    } catch(e) {
+      console.error(e);
+      alert("Could not save this status to Firebase. Please check your Firestore security rules.");
     }
-    const r=reports.find(x=>x.id===id); if(r){r.status=status;renderAdmin();renderMine();renderBrowse();}
   }
 
   async function deleteReport(id) {
     if (!confirm("Delete this report?")) return;
-    if (db && FS && id) {
-      try { await FS.deleteDoc(FS.doc(db,"reports",id)); await loadReports(); return; }
-      catch(e) { console.error(e); }
+    if (!db || !FS || !id) { alert("Firebase is not connected. Nothing was deleted."); return; }
+    try {
+      await FS.deleteDoc(FS.doc(db,"reports",id));
+      await loadReports();
+    } catch(e) {
+      console.error(e);
+      alert("Could not delete this report from Firebase. Please check your Firestore security rules.");
     }
-    reports=reports.filter(x=>x.id!==id); renderAdmin();renderMine();renderBrowse();
   }
 
   async function connectFirebase() {
@@ -2388,6 +2437,16 @@ body.admin-mode #adminDashboard { display:block !important; }
       db = F.getFirestore(A.initializeApp(config)); FS=F; await loadReports();
     } catch(e) { console.warn("Firebase unavailable in preview; login/dashboard remains testable.",e); }
   }
+
+  function openMatchModal(caseNumber) {
+    const u=user();
+    if ($("quickMatchCase")) $("quickMatchCase").value=caseNumber||"";
+    if ($("quickMatchName")) $("quickMatchName").value=u?.name||"";
+    if ($("quickMatchEmail")) $("quickMatchEmail").value=u?.email||"";
+    if ($("quickMatchSuccess")) $("quickMatchSuccess").style.display="none";
+    $("matchModal")?.classList.add("open");
+  }
+  function closeMatchModal(){ $("matchModal")?.classList.remove("open"); }
 
   document.addEventListener("DOMContentLoaded", () => {
     $("showPublicLogin")?.addEventListener("click",()=>showTab("public"));
@@ -2495,7 +2554,7 @@ body.admin-mode #adminDashboard { display:block !important; }
       e.preventDefault();
       const u=user(); if(!u){alert("Please sign in first.");showGateway("public");return;}
       const r={
-        id:"local-"+Date.now(), caseNumber:"LF-"+String(Date.now()).slice(-7),
+        caseNumber:"LF-"+String(Date.now()).slice(-7),
         userEmail:u.email,userName:u.name,
         category:$("itemType")?.value||"Other",
         dateLost:$("dateLost")?.value||"",
@@ -2505,13 +2564,43 @@ body.admin-mode #adminDashboard { display:block !important; }
         status:"Awaiting Review"
       };
       if(db&&FS){
-        try{await FS.addDoc(FS.collection(db,"reports"),{...r,createdAt:FS.serverTimestamp()});await loadReports();}
-        catch(err){console.error(err);reports.unshift(r);}
-      } else reports.unshift(r);
+        try {
+          await FS.addDoc(FS.collection(db,"reports"), {...r,createdAt:FS.serverTimestamp()});
+          await loadReports();
+        } catch(err) {
+          console.error(err);
+          alert("Report could not be saved to Firebase. Check Firestore permissions.");
+          return;
+        }
+      } else {
+        alert("Firebase is not connected. Report was not submitted.");
+        return;
+      }
       renderAdmin();renderMine();renderBrowse();form.reset();
       alert("Report submitted. Case number: "+r.caseNumber);
     });
 
+
+    $("closeMatchModal")?.addEventListener("click",closeMatchModal);
+    $("matchModal")?.addEventListener("click",e=>{ if(e.target===$("matchModal")) closeMatchModal(); });
+    $("quickMatchForm")?.addEventListener("submit",async e=>{
+      e.preventDefault();
+      if(!db||!FS){ alert("Firebase is not connected. Your possible match was not sent."); return; }
+      const match={
+        caseNumber:$("quickMatchCase")?.value.trim()||"",
+        name:$("quickMatchName")?.value.trim()||"",
+        email:$("quickMatchEmail")?.value.trim().toLowerCase()||"",
+        foundLocation:$("quickMatchLocation")?.value.trim()||"",
+        message:$("quickMatchMessage")?.value.trim()||"",
+        status:"New"
+      };
+      try {
+        await FS.addDoc(FS.collection(db,"matches"),{...match,createdAt:FS.serverTimestamp()});
+        $("quickMatchSuccess").style.display="block";
+        $("quickMatchLocation").value=""; $("quickMatchMessage").value="";
+        await loadReports();
+      } catch(err) { console.error(err); alert("Could not send the possible match. Please check Firebase permissions."); }
+    });
 
     const matchForm=$("matchForm");
     if(matchForm) matchForm.addEventListener("submit",async e=>{
